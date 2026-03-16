@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Budget Calculator — Safari Planner | Bajeti ya Safari</title>
+  <meta name="description" content="Calculate the real cost of your East Africa safari. Real park fees for Kenya, Uganda and Tanzania.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--forest:#1E3A0A;--green:#2D5016;--gold:#C8860A;--amber:#E8A84B;--sand:#F5EDD8;--dusk:#2C1A0A}
+    body{background:var(--dusk);color:var(--sand);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh}
+
+    nav{background:var(--forest);padding:0 40px;display:flex;justify-content:space-between;align-items:center;height:60px;border-bottom:1px solid rgba(245,237,216,.08);position:sticky;top:0;z-index:200}
+    .nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:17px;color:var(--sand)}
+    .nav-links{display:flex;gap:6px}
+    .nav-link{color:rgba(245,237,216,.55);text-decoration:none;font-size:13px;font-weight:400;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-link:hover{color:var(--sand);background:rgba(255,255,255,.06)}
+    .nav-link.active{color:var(--amber);background:rgba(200,134,10,.12)}
+
+    .hero-band{background:var(--green);padding:36px 40px 32px;position:relative;overflow:hidden}
+    .hero-band::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(200,134,10,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(200,134,10,.05) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+    .hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+    .hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:8px}
+    .hero-title{font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,40px);font-weight:900;color:var(--sand);line-height:1.1;margin-bottom:4px}
+    .hero-title em{font-style:italic;color:var(--amber)}
+    .hero-swahili{font-family:'Playfair Display',serif;font-size:clamp(14px,2vw,18px);font-style:italic;color:rgba(245,237,216,.4);font-weight:700}
+
+    /* LAYOUT */
+    .layout{max-width:1100px;margin:0 auto;padding:28px 40px 60px;display:grid;grid-template-columns:1fr 340px;gap:24px;align-items:start}
+
+    /* PANELS */
+    .panel{background:rgba(245,237,216,.04);border:1px solid rgba(245,237,216,.09);border-radius:16px;overflow:hidden;margin-bottom:20px}
+    .panel-hdr{padding:14px 20px;border-bottom:1px solid rgba(245,237,216,.07);background:rgba(0,0,0,.15);display:flex;justify-content:space-between;align-items:center}
+    .panel-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--sand)}
+    .panel-sub{font-size:11px;color:rgba(245,237,216,.4);margin-top:1px}
+    .panel-body{padding:20px}
+
+    /* FORM */
+    .form-row{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+    .form-group{display:flex;flex-direction:column;gap:5px;flex:1;min-width:120px}
+    .form-label{font-size:10px;font-weight:500;color:rgba(245,237,216,.5);letter-spacing:.8px;text-transform:uppercase}
+    .form-input{background:rgba(0,0,0,.25);border:1px solid rgba(245,237,216,.12);border-radius:8px;padding:10px 14px;color:var(--sand);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;outline:none;transition:border-color .2s;width:100%}
+    .form-input:focus{border-color:rgba(200,134,10,.5)}
+    .form-input option{background:#1E3A0A;color:var(--sand)}
+
+    /* PARK FEE TABLE */
+    .fee-section{margin-bottom:20px}
+    .fee-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+    .fee-section-title.ke{color:#7EE47E}
+    .fee-section-title.ug{color:#F09090}
+    .fee-section-title.tz{color:#7EE494}
+
+    .park-fee-row{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;border:1px solid rgba(245,237,216,.06);background:rgba(245,237,216,.03);margin-bottom:6px;transition:all .15s}
+    .park-fee-row:hover{border-color:rgba(245,237,216,.12)}
+    .park-fee-row.selected{border-color:rgba(200,134,10,.3);background:rgba(200,134,10,.06)}
+    .pf-check{width:18px;height:18px;border-radius:4px;border:1.5px solid rgba(245,237,216,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;transition:all .15s}
+    .pf-check.on{background:var(--gold);border-color:var(--gold);color:#fff}
+    .pf-icon{font-size:18px;line-height:1;flex-shrink:0}
+    .pf-name{flex:1;font-size:13px;color:rgba(245,237,216,.85);font-weight:400}
+    .pf-note{font-size:10px;color:rgba(245,237,216,.35)}
+    .pf-fee{font-size:13px;font-weight:700;color:var(--amber);white-space:nowrap}
+    .pf-days{display:flex;align-items:center;gap:5px}
+    .pf-days input{width:46px;background:rgba(0,0,0,.25);border:1px solid rgba(245,237,216,.1);border-radius:6px;padding:4px 8px;color:var(--sand);font-family:'DM Sans',sans-serif;font-size:12px;text-align:center;outline:none}
+    .pf-days-label{font-size:10px;color:rgba(245,237,216,.35)}
+
+    /* EXTRA COSTS */
+    .extra-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .extra-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid rgba(245,237,216,.07);background:rgba(245,237,216,.03);cursor:pointer;transition:all .15s}
+    .extra-item:hover{border-color:rgba(245,237,216,.14)}
+    .extra-item.on{border-color:rgba(200,134,10,.3);background:rgba(200,134,10,.06)}
+    .extra-check{width:16px;height:16px;border-radius:4px;border:1.5px solid rgba(245,237,216,.2);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0;transition:all .15s}
+    .extra-item.on .extra-check{background:var(--gold);border-color:var(--gold)}
+    .extra-icon{font-size:18px;line-height:1;flex-shrink:0}
+    .extra-info{flex:1}
+    .extra-name{font-size:12px;color:rgba(245,237,216,.85);font-weight:500}
+    .extra-cost{font-size:11px;color:var(--amber);font-weight:700}
+
+    /* SIDEBAR TOTAL */
+    .total-card{background:var(--forest);border:1px solid rgba(245,237,216,.09);border-radius:16px;padding:20px;margin-bottom:16px;position:sticky;top:80px}
+    .total-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--sand);margin-bottom:16px}
+    .total-big{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--amber);margin-bottom:4px;line-height:1}
+    .total-per{font-size:12px;color:rgba(245,237,216,.4);margin-bottom:20px}
+    .total-breakdown{display:flex;flex-direction:column;gap:0}
+    .tb-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(245,237,216,.06)}
+    .tb-row:last-child{border-bottom:none;padding-bottom:0}
+    .tb-label{font-size:12px;color:rgba(245,237,216,.55);display:flex;align-items:center;gap:6px}
+    .tb-val{font-size:12px;font-weight:500;color:var(--sand)}
+    .tb-val.zero{color:rgba(245,237,216,.25)}
+
+    /* BUDGET GAUGE */
+    .gauge-section{margin:16px 0}
+    .gauge-label{display:flex;justify-content:space-between;font-size:11px;color:rgba(245,237,216,.4);margin-bottom:6px}
+    .gauge-track{background:rgba(245,237,216,.08);border-radius:6px;height:8px;overflow:hidden}
+    .gauge-fill{height:100%;border-radius:6px;transition:width .5s,background .3s}
+    .budget-tiers{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+    .tier-row{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;border:1px solid rgba(245,237,216,.07);font-size:11px;color:rgba(245,237,216,.5)}
+    .tier-row.active{border-color:rgba(200,134,10,.3);background:rgba(200,134,10,.08);color:var(--amber)}
+    .tier-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+    /* ACTION BUTTONS */
+    .action-row{display:flex;gap:8px}
+    .act-btn{flex:1;border:none;border-radius:10px;padding:10px 8px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;cursor:pointer;text-align:center;transition:all .15s}
+    .act-btn.primary{background:var(--gold);color:#fff}
+    .act-btn.primary:hover{background:var(--amber)}
+    .act-btn.sec{background:rgba(245,237,216,.06);border:1px solid rgba(245,237,216,.12);color:rgba(245,237,216,.7)}
+    .act-btn.sec:hover{background:rgba(245,237,216,.1);color:var(--sand)}
+
+    /* TIPS */
+    .tip-card{background:rgba(200,134,10,.07);border:1px solid rgba(200,134,10,.18);border-radius:14px;padding:14px;margin-bottom:14px}
+    .tip-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+    .tip-item{font-size:11px;color:rgba(245,237,216,.65);line-height:1.6;margin-bottom:5px;display:flex;gap:6px}
+    .tip-item:last-child{margin-bottom:0}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);border:1px solid rgba(200,134,10,.3);border-radius:10px;padding:12px 24px;font-size:13px;font-weight:500;color:var(--sand);z-index:999;transition:transform .3s;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+
+    @media(max-width:780px){
+      nav{padding:0 16px}.hero-band{padding:28px 16px 24px}.layout{grid-template-columns:1fr;padding:20px 16px 40px}.extra-grid{grid-template-columns:1fr}.nav-links{display:none}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span style="font-size:20px;line-height:1">🦁</span><span class="nav-logo">Safari Planner</span></a>
+  <div class="nav-links">
+    <a class="nav-link" href="discover.html">Discover / Gundua</a>
+    <a class="nav-link" href="planner.html">My Trip / Safari Yangu</a>
+    <a class="nav-link" href="wildlife.html">Wildlife / Wanyamapori</a>
+    <a class="nav-link active" href="#">Budget / Bajeti</a>
+  </div>
+</nav>
+
+<div class="hero-band">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Budget Calculator · Kikokotoo cha Bajeti</div>
+    <h1 class="hero-title">Know Your <em>Real Costs</em></h1>
+    <div class="hero-swahili">Jua Gharama Halisi za Safari Yako · Real East Africa Park Fees 2026</div>
+  </div>
+</div>
+
+<div class="layout">
+  <!-- LEFT -->
+  <div>
+
+    <!-- TRIP BASICS -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <div><div class="panel-title">👥 Trip Basics · Maelezo ya Msingi</div><div class="panel-sub">Your group size and accommodation level</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Travelers · Wasafiri</label>
+            <select class="form-input" id="travelers" onchange="calc()">
+              <option value="1">1 person · mtu 1</option>
+              <option value="2" selected>2 people · watu 2</option>
+              <option value="3">3 people · watu 3</option>
+              <option value="4">4 people · watu 4</option>
+              <option value="6">6 people · watu 6</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Trip Duration · Muda</label>
+            <select class="form-input" id="duration" onchange="calc()">
+              <option value="5">5 days · siku 5</option>
+              <option value="7">7 days · siku 7</option>
+              <option value="10" selected>10 days · siku 10</option>
+              <option value="12">12 days · siku 12</option>
+              <option value="14">14 days · siku 14</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Accommodation · Makazi</label>
+            <select class="form-input" id="accom" onchange="calc()">
+              <option value="60">Budget ($60/night)</option>
+              <option value="150" selected>Mid-range ($150/night)</option>
+              <option value="350">Luxury ($350/night)</option>
+              <option value="700">Ultra-luxury ($700/night)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Transport · Usafiri</label>
+            <select class="form-input" id="transport" onchange="calc()">
+              <option value="road">Road only · Barabara</option>
+              <option value="mixed" selected>Mixed · Mchanganyiko</option>
+              <option value="fly">Fly-in · Ndege</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KENYA PARKS -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <div><div class="panel-title">🇰🇪 Kenya Parks · Mbuga za Kenya</div><div class="panel-sub">Select parks you'll visit · Chagua mbuga utakazozitembelea</div></div>
+      </div>
+      <div class="panel-body">
+        <div id="ke-parks"></div>
+      </div>
+    </div>
+
+    <!-- UGANDA PARKS -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <div><div class="panel-title">🇺🇬 Uganda Parks · Mbuga za Uganda</div><div class="panel-sub">Including gorilla & chimp permits · Pamoja na ruhusa za gorilla</div></div>
+      </div>
+      <div class="panel-body">
+        <div id="ug-parks"></div>
+      </div>
+    </div>
+
+    <!-- TANZANIA PARKS -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <div><div class="panel-title">🇹🇿 Tanzania Parks · Mbuga za Tanzania</div><div class="panel-sub">All fees in USD · Ada zote kwa dola za Marekani</div></div>
+      </div>
+      <div class="panel-body">
+        <div id="tz-parks"></div>
+      </div>
+    </div>
+
+    <!-- EXTRA COSTS -->
+    <div class="panel">
+      <div class="panel-hdr">
+        <div><div class="panel-title">➕ Extra Costs · Gharama za Ziada</div><div class="panel-sub">Add what applies to your trip</div></div>
+      </div>
+      <div class="panel-body">
+        <div class="extra-grid" id="extras-grid"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="total-card">
+      <div class="total-title">💰 Total Estimate · Jumla ya Gharama</div>
+      <div class="total-big" id="total-val">$0</div>
+      <div class="total-per" id="total-per">for 2 people · 10 days</div>
+
+      <div class="gauge-section">
+        <div class="gauge-label"><span>Budget</span><span>Ultra-luxury</span></div>
+        <div class="gauge-track"><div class="gauge-fill" id="gauge-fill" style="width:0%;background:var(--gold)"></div></div>
+      </div>
+
+      <div class="total-breakdown">
+        <div class="tb-row"><span class="tb-label">🏕️ Accommodation</span><span class="tb-val" id="tb-accom">$0</span></div>
+        <div class="tb-row"><span class="tb-label">🏞️ Park fees · Ada za Mbuga</span><span class="tb-val" id="tb-parks">$0</span></div>
+        <div class="tb-row"><span class="tb-label">✈️ Flights & transfers</span><span class="tb-val" id="tb-flights">$0</span></div>
+        <div class="tb-row"><span class="tb-label">🍽️ Food & activities</span><span class="tb-val" id="tb-food">$0</span></div>
+        <div class="tb-row"><span class="tb-label">➕ Extras</span><span class="tb-val" id="tb-extras">$0</span></div>
+        <div class="tb-row" style="border-top:1px solid rgba(245,237,216,.15);margin-top:4px;padding-top:10px">
+          <span class="tb-label" style="font-weight:700;color:var(--sand)">Per person total</span>
+          <span class="tb-val" style="color:var(--amber);font-weight:700" id="tb-perperson">$0</span>
+        </div>
+      </div>
+
+      <div class="budget-tiers" style="margin-top:14px" id="tier-guide"></div>
+
+      <div class="action-row" style="margin-top:16px">
+        <button class="act-btn primary" onclick="saveAndShare()">📤 Share Budget · Shiriki</button>
+        <button class="act-btn sec" onclick="resetBudget()">🔄 Reset</button>
+      </div>
+    </div>
+
+    <div class="tip-card">
+      <div class="tip-title">💡 Money-saving Tips · Vidokezo vya Kuokoa Pesa</div>
+      <div class="tip-item"><span>🗓️</span><span>Travel Apr–Jun (shoulder) — 20–30% cheaper than peak season</span></div>
+      <div class="tip-item"><span>🚌</span><span>Road transfers between Serengeti & Ngorongoro save ~$400 vs flying</span></div>
+      <div class="tip-item"><span>🦍</span><span>Book Bwindi gorilla permits direct at <strong>ugandawildlife.org</strong> — no agent markup</span></div>
+      <div class="tip-item"><span>🏕️</span><span>Public campsites in Tanzanian parks cost $30–50/night vs $300+ for lodges</span></div>
+      <div class="tip-item"><span>👥</span><span>Groups of 4+ split vehicle hire — biggest single saving on a safari</span></div>
+    </div>
+
+    <div class="tip-card" style="background:rgba(184,25,42,.07);border-color:rgba(184,25,42,.2)">
+      <div class="tip-title" style="color:#F09090">⚠️ Hidden Costs · Gharama Zilizofichwa</div>
+      <div class="tip-item"><span>🦍</span><span>Ngorongoro crater fee: <strong>$823 per vehicle</strong> — not per person</span></div>
+      <div class="tip-item"><span>💉</span><span>Yellow fever vaccination required for Uganda · chanjo ya homa ya njano</span></div>
+      <div class="tip-item"><span>📋</span><span>East Africa Tourist Visa (Kenya+Uganda+Rwanda): <strong>$100</strong></span></div>
+      <div class="tip-item"><span>🎩</span><span>Guide gratuities: budget $10–20/day per guide · zawadi kwa mwongozo</span></div>
+    </div>
+  </div>
+</div>
+
+<footer style="background:#0F1205;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(245,237,216,.05)">
+  <span style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(245,237,216,.35)">🦁 Safari Planner · safariplanner.co.tz</span>
+  <span style="font-size:12px;color:rgba(245,237,216,.2)">Built in Tanzania 🇹🇿 by Daniel · © 2026</span>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const PARKS = {
+  ke: [
+    {id:'ke-mara',icon:'🦁',name:'Masai Mara NR',sw:'Masai Mara',fee:80,note:'per person/day'},
+    {id:'ke-amboseli',icon:'🐘',name:'Amboseli NP',sw:'Amboseli',fee:90,note:'per person/day'},
+    {id:'ke-samburu',icon:'🦒',name:'Samburu NR',sw:'Samburu',fee:65,note:'per person/day'},
+    {id:'ke-nakuru',icon:'🦩',name:'Lake Nakuru NP',sw:'Ziwa Nakuru',fee:60,note:'per person/day'},
+    {id:'ke-tsavo',icon:'🐆',name:'Tsavo East & West',sw:'Tsavo',fee:52,note:'per person/day'},
+  ],
+  ug: [
+    {id:'ug-bwindi',icon:'🦍',name:'Bwindi — Gorilla permit',sw:'Ruhusa ya Gorilla',fee:800,note:'per person, once'},
+    {id:'ug-kibale',icon:'🐒',name:'Kibale — Chimp permit',sw:'Ruhusa ya Sokwe',fee:150,note:'per person, once'},
+    {id:'ug-qe',icon:'🦁',name:'Queen Elizabeth NP',sw:'Malkia Elizabeth',fee:45,note:'per person/day'},
+    {id:'ug-murchison',icon:'💧',name:'Murchison Falls NP',sw:'Maporomoko ya Murchison',fee:40,note:'per person/day'},
+  ],
+  tz: [
+    {id:'tz-serengeti',icon:'🌅',name:'Serengeti NP',sw:'Serengeti',fee:82,note:'per person/day'},
+    {id:'tz-ngorongoro',icon:'🦏',name:'Ngorongoro Crater',sw:'Krater ya Ngorongoro',fee:823,note:'per vehicle/entry'},
+    {id:'tz-tarangire',icon:'🐘',name:'Tarangire NP',sw:'Tarangire',fee:57,note:'per person/day'},
+    {id:'tz-manyara',icon:'🦩',name:'Lake Manyara NP',sw:'Ziwa Manyara',fee:53,note:'per person/day'},
+  ]
+};
+
+const EXTRAS = [
+  {id:'visa',icon:'📋',name:'East Africa Tourist Visa',sw:'Visa',cost:100,note:'per person',perPerson:true},
+  {id:'yellow',icon:'💉',name:'Yellow fever cert (Uganda)',sw:'Chanjo',cost:50,note:'per person',perPerson:true},
+  {id:'travel-ins',icon:'🛡️',name:'Travel insurance',sw:'Bima ya Safari',cost:80,note:'per person',perPerson:true},
+  {id:'balloon',icon:'🎈',name:'Hot air balloon (Serengeti)',sw:'Puto la Hewa',cost:599,note:'per person',perPerson:true},
+  {id:'tips',icon:'🎩',name:'Guide gratuities (full trip)',sw:'Zawadi kwa Mwongozo',cost:150,note:'per person',perPerson:true},
+  {id:'malaria',icon:'💊',name:'Malaria prevention',sw:'Dawa ya Malaria',cost:40,note:'per person',perPerson:true},
+  {id:'porter',icon:'🎒',name:'Porter/local guide (Bwindi)',sw:'Mpagazi Bwindi',cost:20,note:'per day',perPerson:false},
+  {id:'photosafari',icon:'📷',name:'Photography safari upgrade',sw:'Upigaji Picha',cost:200,note:'per vehicle',perPerson:false},
+];
+
+let selectedParks = {};
+let selectedExtras = new Set();
+let parkDays = {};
+
+function buildParkRows(c) {
+  const el = document.getElementById(c + '-parks');
+  el.innerHTML = PARKS[c].map(p => `
+    <div class="park-fee-row ${selectedParks[p.id]?'selected':''}" id="pfrow-${p.id}">
+      <div class="pf-check ${selectedParks[p.id]?'on':''}" onclick="togglePark('${p.id}')" id="pfc-${p.id}">${selectedParks[p.id]?'✓':''}</div>
+      <span class="pf-icon">${p.icon}</span>
+      <div style="flex:1">
+        <div class="pf-name">${p.name}</div>
+        <div class="pf-note">${p.sw} · ${p.note}</div>
+      </div>
+      <div class="pf-fee">$${p.fee}</div>
+      ${p.note.includes('day') ? `
+        <div class="pf-days">
+          <input type="number" min="1" max="14" value="${parkDays[p.id]||1}" id="days-${p.id}" onchange="setDays('${p.id}',this.value)" onclick="event.stopPropagation()" style="${selectedParks[p.id]?'':'opacity:.4'}">
+          <span class="pf-days-label">days</span>
+        </div>` : ''}
+    </div>
+  `).join('');
+}
+
+function buildExtras() {
+  document.getElementById('extras-grid').innerHTML = EXTRAS.map(e => `
+    <div class="extra-item ${selectedExtras.has(e.id)?'on':''}" onclick="toggleExtra('${e.id}')" id="ext-${e.id}">
+      <div class="extra-check ${selectedExtras.has(e.id)?'on':''}">${selectedExtras.has(e.id)?'✓':''}</div>
+      <span class="extra-icon">${e.icon}</span>
+      <div class="extra-info">
+        <div class="extra-name">${e.name}</div>
+        <div class="extra-cost">$${e.cost} ${e.note}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function togglePark(id) {
+  selectedParks[id] = !selectedParks[id];
+  if (!parkDays[id]) parkDays[id] = 1;
+  const c = id.split('-')[0];
+  buildParkRows(c);
+  calc();
+}
+
+function setDays(id, val) {
+  parkDays[id] = Math.max(1, parseInt(val)||1);
+  calc();
+}
+
+function toggleExtra(id) {
+  if (selectedExtras.has(id)) selectedExtras.delete(id);
+  else selectedExtras.add(id);
+  buildExtras();
+  calc();
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function calc() {
+  const travelers = parseInt(document.getElementById('travelers').value);
+  const duration = parseInt(document.getElementById('duration').value);
+  const accomRate = parseInt(document.getElementById('accom').value);
+  const transport = document.getElementById('transport').value;
+
+  // Accommodation (per person per night)
+  const accomTotal = accomRate * duration * travelers;
+
+  // Park fees
+  let parkTotal = 0;
+  const allParks = [...PARKS.ke, ...PARKS.ug, ...PARKS.tz];
+  allParks.forEach(p => {
+    if (!selectedParks[p.id]) return;
+    const days = parkDays[p.id] || 1;
+    if (p.note.includes('vehicle')) parkTotal += p.fee; // Ngorongoro
+    else if (p.note.includes('once')) parkTotal += p.fee * travelers;
+    else parkTotal += p.fee * travelers * days;
+  });
+
+  // Flights & transfers
+  const flightRates = { road: 80, mixed: 180, fly: 420 };
+  const flightTotal = flightRates[transport] * travelers;
+
+  // Food & activities ($50/person/day)
+  const foodTotal = 50 * travelers * duration;
+
+  // Extras
+  let extrasTotal = 0;
+  EXTRAS.forEach(e => {
+    if (!selectedExtras.has(e.id)) return;
+    extrasTotal += e.perPerson ? e.cost * travelers : e.cost;
+  });
+
+  const total = accomTotal + parkTotal + flightTotal + foodTotal + extrasTotal;
+  const perPerson = Math.round(total / travelers);
+
+  document.getElementById('total-val').textContent = fmt(total);
+  document.getElementById('total-per').textContent = `for ${travelers} ${travelers===1?'person':'people'} · ${duration} days`;
+  document.getElementById('tb-accom').textContent = fmt(accomTotal);
+  document.getElementById('tb-parks').textContent = parkTotal > 0 ? fmt(parkTotal) : '$0';
+  document.getElementById('tb-flights').textContent = fmt(flightTotal);
+  document.getElementById('tb-food').textContent = fmt(foodTotal);
+  document.getElementById('tb-extras').textContent = extrasTotal > 0 ? fmt(extrasTotal) : '$0';
+  document.getElementById('tb-perperson').textContent = fmt(perPerson);
+
+  // Gauge
+  const maxBudget = 15000;
+  const pct = Math.min(100, Math.round(total / maxBudget * 100));
+  const gaugeColor = pct < 30 ? '#1EB53A' : pct < 60 ? '#C8860A' : '#B8192A';
+  document.getElementById('gauge-fill').style.width = pct + '%';
+  document.getElementById('gauge-fill').style.background = gaugeColor;
+
+  // Tier guide
+  document.getElementById('tier-guide').innerHTML = [
+    {label:'Budget safari',range:'$1,500–3,000',color:'#1EB53A',min:1500,max:3000},
+    {label:'Mid-range',range:'$3,000–7,000',color:'#C8860A',min:3000,max:7000},
+    {label:'Luxury',range:'$7,000–15,000',color:'#B8192A',min:7000,max:15000},
+  ].map(t => `
+    <div class="tier-row ${total>=t.min&&total<t.max?'active':''}">
+      <span class="tier-dot" style="background:${t.color}"></span>
+      <span style="flex:1">${t.label}</span>
+      <span style="font-size:11px;font-weight:700;color:${t.color}">${t.range}</span>
+    </div>
+  `).join('');
+
+  save();
+}
+
+function save() {
+  try {
+    localStorage.setItem('sp_budget', JSON.stringify({
+      selectedParks, parkDays, selectedExtras:[...selectedExtras],
+      travelers: document.getElementById('travelers').value,
+      duration: document.getElementById('duration').value,
+      accom: document.getElementById('accom').value,
+      transport: document.getElementById('transport').value
+    }));
+  } catch(e){}
+}
+
+function loadSaved() {
+  try {
+    const raw = localStorage.getItem('sp_budget');
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    selectedParks = d.selectedParks || {};
+    parkDays = d.parkDays || {};
+    selectedExtras = new Set(d.selectedExtras || []);
+    if (d.travelers) document.getElementById('travelers').value = d.travelers;
+    if (d.duration) document.getElementById('duration').value = d.duration;
+    if (d.accom) document.getElementById('accom').value = d.accom;
+    if (d.transport) document.getElementById('transport').value = d.transport;
+  } catch(e){}
+}
+
+function resetBudget() {
+  if (!confirm('Reset budget? · Weka bajeti upya?')) return;
+  selectedParks = {}; parkDays = {}; selectedExtras = new Set();
+  buildParkRows('ke'); buildParkRows('ug'); buildParkRows('tz'); buildExtras(); calc();
+  showToast('Budget reset · Imewekwa upya');
+}
+
+function saveAndShare() {
+  const total = document.getElementById('total-val').textContent;
+  const text = `🦁 My Safari Budget Estimate\n${total} total\nCalculated at safariplanner.co.tz\n\nPlan your own East Africa safari today!`;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+    showToast('Budget copied to clipboard · Imenakiliwa ✓');
+  }
+}
+
+let toastT;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// INIT
+loadSaved();
+buildParkRows('ke'); buildParkRows('ug'); buildParkRows('tz'); buildExtras(); calc();
+</script>
+</body>
+</html>
