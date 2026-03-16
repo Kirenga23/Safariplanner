@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partner With Us — Safari Planner | Shiriki Nasi</title>
+  <meta name="description" content="Safari Planner is seeking tour operator partners and investors across East Africa. Built in Tanzania.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--forest:#1E3A0A;--green:#2D5016;--gold:#C8860A;--amber:#E8A84B;--sand:#F5EDD8;--dusk:#2C1A0A}
+    html{scroll-behavior:smooth}
+    body{background:var(--dusk);color:var(--sand);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh}
+
+    /* NAV */
+    nav{background:var(--forest);padding:0 40px;display:flex;justify-content:space-between;align-items:center;height:60px;border-bottom:1px solid rgba(245,237,216,.08);position:sticky;top:0;z-index:200}
+    .nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:17px;color:var(--sand)}
+    .nav-links{display:flex;gap:6px}
+    .nav-link{color:rgba(245,237,216,.55);text-decoration:none;font-size:13px;font-weight:400;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-link:hover{color:var(--sand);background:rgba(255,255,255,.06)}
+    .nav-link.active{color:var(--amber);background:rgba(200,134,10,.12)}
+    .nav-cta{background:var(--gold);color:#fff;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;transition:background .2s}
+    .nav-cta:hover{background:var(--amber)}
+
+    /* HERO */
+    .hero{background:var(--green);padding:80px 40px 70px;position:relative;overflow:hidden;text-align:center}
+    .hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(200,134,10,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(200,134,10,.05) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+    .hero::after{content:'🌍';position:absolute;right:-20px;bottom:-20px;font-size:200px;opacity:.04;pointer-events:none}
+    .hero-inner{max-width:760px;margin:0 auto;position:relative;z-index:1}
+    .hero-eyebrow{font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:16px}
+    .hero-title{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,62px);font-weight:900;color:var(--sand);line-height:1.05;margin-bottom:16px}
+    .hero-title em{font-style:italic;color:var(--amber)}
+    .hero-sub{font-size:clamp(15px,2.5vw,19px);color:rgba(245,237,216,.65);line-height:1.65;max-width:580px;margin:0 auto 36px}
+    .hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .hbtn{padding:14px 28px;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;text-decoration:none;transition:all .2s}
+    .hbtn.primary{background:var(--gold);color:#fff;border:none}
+    .hbtn.primary:hover{background:var(--amber);transform:translateY(-2px)}
+    .hbtn.ghost{background:rgba(245,237,216,.1);color:var(--sand);border:1px solid rgba(245,237,216,.2)}
+    .hbtn.ghost:hover{background:rgba(245,237,216,.16)}
+
+    /* STATS BAND */
+    .stats-band{background:rgba(0,0,0,.3);border-top:1px solid rgba(245,237,216,.06);border-bottom:1px solid rgba(245,237,216,.06);padding:28px 40px}
+    .stats-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:20px;text-align:center}
+    .stat-n{font-family:'Playfair Display',serif;font-size:36px;font-weight:900;color:var(--amber);line-height:1}
+    .stat-l{font-size:12px;color:rgba(245,237,216,.5);margin-top:5px}
+
+    /* SECTIONS */
+    .section{padding:72px 40px}
+    .section-inner{max-width:960px;margin:0 auto}
+    .section-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:10px;text-align:center}
+    .section-title{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,42px);font-weight:700;color:var(--sand);text-align:center;margin-bottom:12px;line-height:1.2}
+    .section-sub{font-size:15px;color:rgba(245,237,216,.55);text-align:center;max-width:560px;margin:0 auto 48px;line-height:1.65}
+    .section.alt{background:rgba(245,237,216,.02)}
+
+    /* WHO IS THIS FOR */
+    .audience-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+    .aud-card{background:rgba(245,237,216,.04);border:1px solid rgba(245,237,216,.08);border-radius:16px;padding:24px}
+    .aud-icon{font-size:32px;line-height:1;margin-bottom:14px;display:block}
+    .aud-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--sand);margin-bottom:8px}
+    .aud-desc{font-size:13px;color:rgba(245,237,216,.55);line-height:1.65;margin-bottom:14px}
+    .aud-offer{font-size:12px;font-weight:500;color:var(--amber);border-top:1px solid rgba(245,237,216,.08);padding-top:12px}
+
+    /* PRODUCT FEATURES */
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+    .feat{display:flex;gap:12px;align-items:flex-start;background:rgba(245,237,216,.04);border:1px solid rgba(245,237,216,.07);border-radius:12px;padding:16px}
+    .feat-icon{font-size:22px;line-height:1;flex-shrink:0;margin-top:1px}
+    .feat-body{}
+    .feat-name{font-size:13px;font-weight:500;color:var(--sand);margin-bottom:3px}
+    .feat-desc{font-size:11px;color:rgba(245,237,216,.45);line-height:1.5}
+
+    /* TRACTION */
+    .traction-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .tract-card{background:rgba(245,237,216,.04);border:1px solid rgba(245,237,216,.08);border-radius:16px;padding:24px}
+    .tract-num{font-family:'Playfair Display',serif;font-size:42px;font-weight:900;color:var(--amber);line-height:1;margin-bottom:6px}
+    .tract-label{font-size:14px;font-weight:500;color:var(--sand);margin-bottom:4px}
+    .tract-sub{font-size:12px;color:rgba(245,237,216,.45);line-height:1.5}
+
+    /* OPPORTUNITY */
+    .opp-box{background:var(--forest);border:1px solid rgba(200,134,10,.2);border-radius:20px;padding:36px;text-align:center}
+    .opp-title{font-family:'Playfair Display',serif;font-size:clamp(22px,3.5vw,36px);font-weight:700;color:var(--sand);margin-bottom:12px}
+    .opp-sub{font-size:15px;color:rgba(245,237,216,.6);line-height:1.65;max-width:560px;margin:0 auto 28px}
+    .opp-numbers{display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:32px}
+    .opp-n{text-align:center}
+    .opp-num{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--amber);line-height:1}
+    .opp-label{font-size:11px;color:rgba(245,237,216,.45);margin-top:4px}
+
+    /* PARTNERSHIP TIERS */
+    .tiers-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .tier-card{background:rgba(245,237,216,.04);border:1.5px solid rgba(245,237,216,.08);border-radius:16px;padding:24px;transition:all .2s}
+    .tier-card.featured{border-color:var(--gold);background:rgba(200,134,10,.07)}
+    .tier-card:hover{transform:translateY(-3px)}
+    .tier-badge{font-size:10px;font-weight:700;padding:3px 10px;border-radius:8px;display:inline-block;margin-bottom:12px;letter-spacing:.5px}
+    .tier-badge.featured{background:var(--gold);color:#fff}
+    .tier-badge.basic{background:rgba(245,237,216,.1);color:rgba(245,237,216,.6)}
+    .tier-badge.enterprise{background:rgba(30,181,58,.15);color:#7EE494}
+    .tier-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--sand);margin-bottom:4px}
+    .tier-price{font-size:28px;font-weight:700;color:var(--amber);font-family:'Playfair Display',serif;margin-bottom:14px}
+    .tier-price span{font-size:13px;color:rgba(245,237,216,.4);font-family:'DM Sans',sans-serif;font-weight:300}
+    .tier-features{list-style:none;display:flex;flex-direction:column;gap:8px}
+    .tier-features li{font-size:12px;color:rgba(245,237,216,.65);display:flex;gap:8px;line-height:1.5}
+    .tier-features li::before{content:'✓';color:var(--amber);font-weight:700;flex-shrink:0}
+
+    /* FOUNDER */
+    .founder-box{display:flex;gap:32px;align-items:center;background:rgba(245,237,216,.03);border:1px solid rgba(245,237,216,.08);border-radius:20px;padding:32px;flex-wrap:wrap}
+    .founder-avatar{width:80px;height:80px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;border:3px solid rgba(200,134,10,.3)}
+    .founder-content{flex:1;min-width:240px}
+    .founder-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--sand);margin-bottom:4px}
+    .founder-title{font-size:13px;color:var(--amber);margin-bottom:12px;font-weight:500}
+    .founder-quote{font-size:14px;color:rgba(245,237,216,.65);line-height:1.7;font-style:italic}
+    .founder-flags{display:flex;gap:8px;margin-top:14px}
+    .founder-flag{font-size:11px;font-weight:700;padding:3px 10px;border-radius:8px;background:rgba(245,237,216,.08);color:rgba(245,237,216,.55)}
+
+    /* CONTACT FORM */
+    .contact-card{background:var(--forest);border:1px solid rgba(245,237,216,.09);border-radius:20px;padding:36px;max-width:620px;margin:0 auto}
+    .contact-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--sand);margin-bottom:6px}
+    .contact-sub{font-size:13px;color:rgba(245,237,216,.5);margin-bottom:24px;line-height:1.6}
+    .cform-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+    .cfl{font-size:10px;font-weight:500;letter-spacing:.8px;text-transform:uppercase;color:rgba(245,237,216,.45);margin-bottom:5px}
+    .cfi{width:100%;background:rgba(0,0,0,.25);border:1px solid rgba(245,237,216,.1);border-radius:10px;padding:10px 14px;color:var(--sand);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+    .cfi:focus{border-color:rgba(200,134,10,.5)}
+    .cfi option{background:#1E3A0A}
+    textarea.cfi{resize:vertical;min-height:80px;line-height:1.6}
+    .cfi-full{grid-column:1/-1}
+    .submit-btn{width:100%;background:var(--gold);border:none;border-radius:12px;padding:14px;color:#fff;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all .2s;margin-top:4px}
+    .submit-btn:hover{background:var(--amber)}
+    .submit-success{display:none;text-align:center;padding:24px}
+    .submit-success-icon{font-size:48px;display:block;margin-bottom:12px}
+    .submit-success-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--sand);margin-bottom:8px}
+    .submit-success-sub{font-size:13px;color:rgba(245,237,216,.55);line-height:1.6}
+
+    /* FOOTER */
+    footer{background:#0F1205;padding:32px 40px;border-top:1px solid rgba(245,237,216,.05)}
+    .footer-inner{max-width:960px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px}
+    .footer-brand{font-family:'Playfair Display',serif;font-size:16px;color:rgba(245,237,216,.35)}
+    .footer-links{display:flex;gap:16px;flex-wrap:wrap}
+    .footer-link{font-size:12px;color:rgba(245,237,216,.3);text-decoration:none;transition:color .2s}
+    .footer-link:hover{color:rgba(245,237,216,.6)}
+    .footer-copy{font-size:11px;color:rgba(245,237,216,.2)}
+
+    /* TOAST */
+    .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);border:1px solid rgba(200,134,10,.3);border-radius:10px;padding:12px 24px;font-size:13px;font-weight:500;color:var(--sand);z-index:999;transition:transform .3s;white-space:nowrap}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+
+    @media(max-width:640px){
+      nav{padding:0 16px}.hero{padding:60px 16px 50px}.stats-band{padding:24px 16px}.section{padding:52px 16px}.contact-card{padding:24px}.cform-grid{grid-template-columns:1fr}.stats-inner{grid-template-columns:1fr 1fr}.traction-grid{grid-template-columns:1fr}.founder-box{flex-direction:column;text-align:center}.nav-links{display:none}
+    }
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    .hero-inner>*{animation:fadeUp .6s ease forwards;opacity:0}
+    .hero-eyebrow{animation-delay:.1s}.hero-title{animation-delay:.2s}.hero-sub{animation-delay:.35s}.hero-btns{animation-delay:.5s}
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span style="font-size:20px;line-height:1">🦁</span><span class="nav-logo">Safari Planner</span></a>
+  <div class="nav-links">
+    <a class="nav-link" href="discover.html">Discover</a>
+    <a class="nav-link" href="planner.html">My Trip</a>
+    <a class="nav-link" href="ai-planner.html">AI Planner</a>
+    <a class="nav-link active" href="#">Partner</a>
+  </div>
+  <a class="nav-cta" href="#contact">Contact Us · Wasiliana</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">For Tour Operators & Investors · Kwa Makampuni ya Utalii</div>
+    <h1 class="hero-title">The <em>Digital Platform</em><br>East Africa Has Been Waiting For</h1>
+    <p class="hero-sub">Safari Planner is East Africa's first AI-powered safari planning app — built in Tanzania, covering Kenya, Uganda & Tanzania. We are seeking tour operator partners and strategic investors.</p>
+    <div class="hero-btns">
+      <a class="hbtn primary" href="#contact">Partner With Us · Shiriki Nasi</a>
+      <a class="hbtn ghost" href="ai-planner.html">Try the AI Planner →</a>
+    </div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-band">
+  <div class="stats-inner">
+    <div><div class="stat-n">13</div><div class="stat-l">Parks covered at launch</div></div>
+    <div><div class="stat-n">3</div><div class="stat-l">Countries — KE · UG · TZ</div></div>
+    <div><div class="stat-n">$20B</div><div class="stat-l">East Africa safari market</div></div>
+    <div><div class="stat-n">Free</div><div class="stat-l">To start using today</div></div>
+  </div>
+</div>
+
+<!-- WHO IS THIS FOR -->
+<div class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">Who we're talking to · Tunazungumza na Nani</div>
+    <h2 class="section-title">Three ways to work with us</h2>
+    <p class="section-sub">Whether you're a local tour operator, a global OTA, or an investor — there's a partnership designed for you.</p>
+    <div class="audience-grid">
+      <div class="aud-card">
+        <span class="aud-icon">🚙</span>
+        <div class="aud-title">Tour Operators</div>
+        <div class="aud-desc">Kenya, Uganda & Tanzania safari companies who want a digital platform to reach international travellers, manage bookings, and showcase their parks and itineraries.</div>
+        <div class="aud-offer">→ White-label platform · Commission partnerships · Featured listings</div>
+      </div>
+      <div class="aud-card">
+        <span class="aud-icon">🌐</span>
+        <div class="aud-title">Travel Companies & OTAs</div>
+        <div class="aud-desc">Global travel platforms — Booking.com, GetYourGuide, Expedia — looking to strengthen their East Africa safari offering with specialised local content and AI tools.</div>
+        <div class="aud-offer">→ Acquisition · API licensing · Content partnership</div>
+      </div>
+      <div class="aud-card">
+        <span class="aud-icon">💼</span>
+        <div class="aud-title">Investors & Acquirers</div>
+        <div class="aud-desc">Angel investors, VCs, or strategic acquirers who see the opportunity in African travel tech — the most underserved region in global tourism technology.</div>
+        <div class="aud-offer">→ Pre-seed investment · Strategic acquisition · Advisory board</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT -->
+<div class="section alt">
+  <div class="section-inner">
+    <div class="section-eyebrow">The Product · Bidhaa</div>
+    <h2 class="section-title">A complete safari platform — already built</h2>
+    <p class="section-sub">No pitch deck promises. This is live, working software you can use right now at safariplanner.co.tz</p>
+    <div class="features-grid">
+      <div class="feat"><span class="feat-icon">🗺️</span><div class="feat-body"><div class="feat-name">Destination Discovery</div><div class="feat-desc">13 parks across Kenya, Uganda & Tanzania with real fees, seasons, and wildlife data</div></div></div>
+      <div class="feat"><span class="feat-icon">📋</span><div class="feat-body"><div class="feat-name">Itinerary Builder</div><div class="feat-desc">Full day-by-day trip planner with templates, activity scheduler, auto-save</div></div></div>
+      <div class="feat"><span class="feat-icon">🤖</span><div class="feat-body"><div class="feat-name">AI Trip Planner</div><div class="feat-desc">Claude AI generates personalised itineraries from a natural language description — unique in East Africa</div></div></div>
+      <div class="feat"><span class="feat-icon">🦍</span><div class="feat-body"><div class="feat-name">Wildlife Tracker</div><div class="feat-desc">30-species sighting log including Uganda exclusives — gorillas, chimps, shoebill stork</div></div></div>
+      <div class="feat"><span class="feat-icon">💰</span><div class="feat-body"><div class="feat-name">Budget Calculator</div><div class="feat-desc">Real 2026 park fees for all 13 parks including Ngorongoro vehicle fee and gorilla permits</div></div></div>
+      <div class="feat"><span class="feat-icon">🇹🇿</span><div class="feat-body"><div class="feat-name">Built in East Africa</div><div class="feat-desc">English + Swahili throughout. Local knowledge, accurate data, authentic perspective</div></div></div>
+    </div>
+    <div style="text-align:center;margin-top:28px">
+      <a class="hbtn primary" href="index.html" style="display:inline-block;padding:12px 28px;background:var(--gold);color:#fff;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none">See the Live App → safariplanner.co.tz</a>
+    </div>
+  </div>
+</div>
+
+<!-- MARKET OPPORTUNITY -->
+<div class="section">
+  <div class="section-inner">
+    <div class="opp-box">
+      <div class="section-eyebrow" style="margin-bottom:16px">The Opportunity · Fursa</div>
+      <div class="opp-title">East Africa safari tourism<br>is a $20 billion industry<br>with almost no dedicated tech</div>
+      <p class="opp-sub">Most safari companies still run on WhatsApp and spreadsheets. No single platform combines AI-powered planning, real wildlife data, and authentic East African knowledge. Safari Planner is building that platform — from inside the region.</p>
+      <div class="opp-numbers">
+        <div class="opp-n"><div class="opp-num">$20B</div><div class="opp-label">Annual safari market</div></div>
+        <div class="opp-n"><div class="opp-num">8.4%</div><div class="opp-label">CAGR growth rate</div></div>
+        <div class="opp-n"><div class="opp-num">0</div><div class="opp-label">AI safari apps in East Africa</div></div>
+        <div class="opp-n"><div class="opp-num">96%</div><div class="opp-label">Operators with no digital platform</div></div>
+      </div>
+      <a class="hbtn primary" href="#contact" style="display:inline-block;padding:12px 28px;background:var(--gold);color:#fff;border-radius:10px;font-size:13px;font-weight:500;text-decoration:none">I want to be part of this →</a>
+    </div>
+  </div>
+</div>
+
+<!-- PARTNERSHIP TIERS -->
+<div class="section alt">
+  <div class="section-inner">
+    <div class="section-eyebrow">Partnership Options · Chaguo za Ushirikiano</div>
+    <h2 class="section-title">Find the right fit for your business</h2>
+    <p class="section-sub">Flexible options for tour operators of every size · Chaguo zinazofaa kwa makampuni ya aina zote</p>
+    <div class="tiers-grid">
+      <div class="tier-card">
+        <div class="tier-badge basic">Starter · Mwanzo</div>
+        <div class="tier-name">Listed Partner</div>
+        <div class="tier-price">Free <span>/ always</span></div>
+        <ul class="tier-features">
+          <li>Your company listed in our park pages</li>
+          <li>Link to your website from Safari Planner</li>
+          <li>Featured in relevant park searches</li>
+          <li>Safari Planner "Partner" badge</li>
+        </ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-badge featured">⭐ Recommended · Inashauriwa</div>
+        <div class="tier-name">Featured Operator</div>
+        <div class="tier-price">$99 <span>/ month</span></div>
+        <ul class="tier-features">
+          <li>Priority listing on all relevant parks</li>
+          <li>Your itineraries featured as templates</li>
+          <li>Direct booking enquiries sent to you</li>
+          <li>Monthly analytics — who viewed your parks</li>
+          <li>Co-branded marketing materials</li>
+          <li>First 3 months free to get started</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-badge enterprise">Enterprise · Biashara Kubwa</div>
+        <div class="tier-name">White-Label Platform</div>
+        <div class="tier-price">Custom <span>pricing</span></div>
+        <ul class="tier-features">
+          <li>Full Safari Planner platform under your brand</li>
+          <li>Your parks, your content, your prices</li>
+          <li>AI trip planner trained on your offerings</li>
+          <li>Direct booking integration</li>
+          <li>Dedicated support from Daniel</li>
+          <li>Revenue share arrangement</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOUNDER -->
+<div class="section">
+  <div class="section-inner">
+    <div class="section-eyebrow">The Founder · Mwanzilishi</div>
+    <h2 class="section-title" style="margin-bottom:32px">Built by someone who lives here</h2>
+    <div class="founder-box">
+      <div class="founder-avatar">🦁</div>
+      <div class="founder-content">
+        <div class="founder-name">Daniel</div>
+        <div class="founder-title">Founder & Builder · Safari Planner · safariplanner.co.tz</div>
+        <div class="founder-quote">"I built Safari Planner because I saw international travellers struggling to plan East African safaris — using outdated information from people who had never been here. I live here. I know the parks, the permits, the guides, and what a real safari costs. This platform is built from the inside — not guessed from the outside."</div>
+        <div class="founder-flags">
+          <span class="founder-flag">🇹🇿 Based in Tanzania</span>
+          <span class="founder-flag">🌍 East Africa specialist</span>
+          <span class="founder-flag">🤖 AI-powered</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="section alt" id="contact">
+  <div class="section-inner">
+    <div class="section-eyebrow">Get In Touch · Wasiliana Nasi</div>
+    <h2 class="section-title" style="margin-bottom:8px">Let's talk</h2>
+    <p class="section-sub" style="margin-bottom:32px">Whether you want to partner, invest, or just explore — send us a message and Daniel will reply within 24 hours · Daniel atajibu ndani ya masaa 24</p>
+    <div class="contact-card">
+      <div id="contact-form-wrap">
+        <div class="contact-title">Send a message · Tuma ujumbe</div>
+        <div class="contact-sub">hello@safariplanner.co.tz · Daniel replies personally</div>
+        <div class="cform-grid">
+          <div>
+            <div class="cfl">Your Name · Jina Lako</div>
+            <input class="cfi" type="text" id="cf-name" placeholder="John Kamau">
+          </div>
+          <div>
+            <div class="cfl">Company · Kampuni</div>
+            <input class="cfi" type="text" id="cf-company" placeholder="Serengeti Safaris Ltd">
+          </div>
+          <div>
+            <div class="cfl">Email · Barua Pepe</div>
+            <input class="cfi" type="email" id="cf-email" placeholder="john@company.com">
+          </div>
+          <div>
+            <div class="cfl">I am a... · Mimi ni...</div>
+            <select class="cfi" id="cf-type">
+              <option value="">Select one...</option>
+              <option>Tour operator in Kenya</option>
+              <option>Tour operator in Uganda</option>
+              <option>Tour operator in Tanzania</option>
+              <option>International travel company / OTA</option>
+              <option>Investor / Angel</option>
+              <option>Media / journalist</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="cfi-full">
+            <div class="cfl">Message · Ujumbe</div>
+            <textarea class="cfi" id="cf-message" placeholder="Tell us about your company and what you're looking for..."></textarea>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="submitContact()">Send Message · Tuma Ujumbe →</button>
+      </div>
+      <div class="submit-success" id="submit-success">
+        <span class="submit-success-icon">🎉</span>
+        <div class="submit-success-title">Message sent!</div>
+        <div class="submit-success-sub">Asante sana for reaching out. Daniel will reply to your email within 24 hours.<br><br>In the meantime, explore the live app at the links above.</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px;font-size:13px;color:rgba(245,237,216,.4)">
+      Or email directly: <strong style="color:var(--amber)">hello@safariplanner.co.tz</strong> · WhatsApp also welcome
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">🦁 Safari Planner · safariplanner.co.tz</div>
+    <div class="footer-links">
+      <a class="footer-link" href="index.html">Home</a>
+      <a class="footer-link" href="discover.html">Discover</a>
+      <a class="footer-link" href="planner.html">My Trip</a>
+      <a class="footer-link" href="wildlife.html">Wildlife</a>
+      <a class="footer-link" href="budget.html">Budget</a>
+      <a class="footer-link" href="ai-planner.html">AI Planner</a>
+    </div>
+    <div class="footer-copy">Built in Tanzania 🇹🇿 by Daniel · © 2026</div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function submitContact() {
+  const name = document.getElementById('cf-name').value.trim();
+  const email = document.getElementById('cf-email').value.trim();
+  const msg = document.getElementById('cf-message').value.trim();
+  if (!name || !email || !msg) {
+    showToast('Please fill in all required fields · Tafadhali jaza sehemu zote');
+    return;
+  }
+  // Save to localStorage for now (Supabase integration coming)
+  try {
+    const leads = JSON.parse(localStorage.getItem('sp_leads') || '[]');
+    leads.push({ name, email, company: document.getElementById('cf-company').value, type: document.getElementById('cf-type').value, msg, date: new Date().toISOString() });
+    localStorage.setItem('sp_leads', JSON.stringify(leads));
+  } catch(e) {}
+  document.getElementById('contact-form-wrap').style.display = 'none';
+  document.getElementById('submit-success').style.display = 'block';
+  showToast('Message sent! · Ujumbe umetumwa 🎉');
+}
+
+let toastT;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastT); toastT = setTimeout(() => el.classList.remove('show'), 3500);
+}
+</script>
+</body>
+</html>
