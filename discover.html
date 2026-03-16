@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discover Parks — Safari Planner | Gundua Mbuga za Wanyama</title>
+  <meta name="description" content="Explore 13 national parks across Kenya, Uganda and Tanzania. Plan your perfect East Africa safari.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest: #1E3A0A;
+      --green: #2D5016;
+      --leaf: #4A7A2A;
+      --gold: #C8860A;
+      --amber: #E8A84B;
+      --sand: #F5EDD8;
+      --dust: #EAE0CC;
+      --dusk: #2C1A0A;
+      --ke: #006600;
+      --ug: #B8192A;
+      --tz: #1EB53A;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dusk);
+      color: var(--sand);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--forest);
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+      border-bottom: 1px solid rgba(245,237,216,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      color: var(--sand);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-link {
+      color: rgba(245,237,216,0.55);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 400;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: all 0.2s;
+    }
+
+    .nav-link:hover { color: var(--sand); background: rgba(255,255,255,0.06); }
+    .nav-link.active { color: var(--amber); background: rgba(200,134,10,0.12); }
+
+    /* HERO BAND */
+    .hero-band {
+      background: var(--green);
+      padding: 48px 40px 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-band::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,134,10,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,134,10,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .hero-band-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 900;
+      color: var(--sand);
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    .hero-swahili {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(16px, 2.5vw, 22px);
+      font-style: italic;
+      color: rgba(245,237,216,0.45);
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+
+    /* SEARCH */
+    .search-wrap {
+      display: flex;
+      gap: 10px;
+      max-width: 520px;
+      margin-bottom: 28px;
+    }
+
+    .search-box {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(245,237,216,0.15);
+      border-radius: 10px;
+      padding: 10px 16px;
+    }
+
+    .search-icon { font-size: 16px; opacity: 0.5; }
+
+    .search-box input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--sand);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .search-box input::placeholder { color: rgba(245,237,216,0.35); }
+
+    /* COUNTRY FILTER TABS */
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ftab {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 16px;
+      border-radius: 100px;
+      border: 1.5px solid rgba(245,237,216,0.15);
+      background: rgba(0,0,0,0.2);
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(245,237,216,0.6);
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .ftab:hover { border-color: rgba(245,237,216,0.3); color: var(--sand); }
+    .ftab.active { background: rgba(200,134,10,0.15); border-color: var(--gold); color: var(--amber); }
+    .ftab.ke.active { background: rgba(0,102,0,0.2); border-color: #00AA00; color: #7EE47E; }
+    .ftab.ug.active { background: rgba(184,25,42,0.2); border-color: #E03050; color: #F09090; }
+    .ftab.tz.active { background: rgba(30,181,58,0.2); border-color: #1EB53A; color: #7EE494; }
+
+    .ftab-flag { font-size: 16px; line-height: 1; }
+    .ftab-count {
+      font-size: 10px;
+      background: rgba(245,237,216,0.1);
+      padding: 1px 6px;
+      border-radius: 8px;
+      font-weight: 700;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 36px 40px 60px;
+    }
+
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .results-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: rgba(245,237,216,0.6);
+    }
+
+    .results-title span { color: var(--amber); font-weight: 700; }
+
+    .sort-select {
+      background: rgba(245,237,216,0.06);
+      border: 1px solid rgba(245,237,216,0.12);
+      border-radius: 8px;
+      padding: 6px 12px;
+      color: rgba(245,237,216,0.6);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    /* PARKS GRID */
+    .parks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .park-card {
+      background: rgba(245,237,216,0.04);
+      border: 1px solid rgba(245,237,216,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+    }
+
+    .park-card:hover {
+      transform: translateY(-3px);
+      border-color: rgba(200,134,10,0.35);
+      background: rgba(200,134,10,0.06);
+    }
+
+    .park-card.ke:hover { border-color: rgba(0,102,0,0.5); }
+    .park-card.ug:hover { border-color: rgba(184,25,42,0.5); }
+    .park-card.tz:hover { border-color: rgba(30,181,58,0.5); }
+
+    .park-banner {
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      line-height: 1;
+      position: relative;
+    }
+
+    .park-banner.ke { background: linear-gradient(135deg, rgba(0,60,0,0.8), rgba(0,102,0,0.4)); }
+    .park-banner.ug { background: linear-gradient(135deg, rgba(80,10,20,0.8), rgba(184,25,42,0.4)); }
+    .park-banner.tz { background: linear-gradient(135deg, rgba(10,60,20,0.8), rgba(30,181,58,0.4)); }
+
+    .park-country-strip {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(0,0,0,0.45);
+      border-radius: 8px;
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      color: rgba(245,237,216,0.9);
+    }
+
+    .park-badge-top {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 8px;
+      color: #fff;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .park-body { padding: 16px; }
+
+    .park-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--sand);
+      margin-bottom: 2px;
+    }
+
+    .park-swahili {
+      font-size: 11px;
+      color: rgba(245,237,216,0.4);
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+
+    .park-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .meta-chip {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: rgba(245,237,216,0.55);
+      background: rgba(245,237,216,0.06);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .meta-chip strong { color: rgba(245,237,216,0.85); font-weight: 500; }
+
+    .park-animals {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .animal-tag {
+      font-size: 11px;
+      padding: 3px 9px;
+      border-radius: 8px;
+      font-weight: 400;
+      color: rgba(245,237,216,0.8);
+      background: rgba(245,237,216,0.07);
+      border: 1px solid rgba(245,237,216,0.1);
+    }
+
+    .park-fee-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid rgba(245,237,216,0.07);
+    }
+
+    .fee-label {
+      font-size: 10px;
+      color: rgba(245,237,216,0.4);
+    }
+
+    .fee-amount {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--amber);
+    }
+
+    .plan-btn {
+      font-size: 11px;
+      font-weight: 700;
+      background: rgba(200,134,10,0.15);
+      border: 1px solid rgba(200,134,10,0.25);
+      color: var(--amber);
+      padding: 5px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .plan-btn:hover { background: rgba(200,134,10,0.3); }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      display: none;
+    }
+
+    .empty-icon { font-size: 48px; margin-bottom: 16px; display: block; }
+    .empty-title { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--sand); margin-bottom: 8px; }
+    .empty-sub { font-size: 14px; color: rgba(245,237,216,0.45); }
+
+    /* BOTTOM BANNER */
+    .bottom-banner {
+      background: var(--forest);
+      border-top: 1px solid rgba(245,237,216,0.06);
+      padding: 40px;
+      text-align: center;
+    }
+
+    .bottom-banner-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: var(--sand);
+      margin-bottom: 6px;
+    }
+
+    .bottom-banner-sub {
+      font-size: 14px;
+      color: rgba(245,237,216,0.45);
+      margin-bottom: 20px;
+    }
+
+    .bottom-btn {
+      display: inline-block;
+      background: var(--gold);
+      color: #fff;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 28px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .bottom-btn:hover { background: var(--amber); }
+
+    /* FOOTER */
+    footer {
+      background: #0F1205;
+      padding: 24px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      border-top: 1px solid rgba(245,237,216,0.05);
+    }
+
+    .footer-left {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      color: rgba(245,237,216,0.35);
+    }
+
+    .footer-right {
+      font-size: 12px;
+      color: rgba(245,237,216,0.2);
+    }
+
+    /* MOBILE */
+    @media (max-width: 640px) {
+      nav { padding: 0 16px; }
+      .hero-band { padding: 32px 16px 28px; }
+      .main { padding: 24px 16px 40px; }
+      .parks-grid { grid-template-columns: 1fr; }
+      .bottom-banner { padding: 32px 16px; }
+      footer { padding: 20px 16px; flex-direction: column; text-align: center; }
+      .nav-links { display: none; }
+    }
+
+    /* Fade in animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .park-card {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">
+    <span style="font-size:20px;line-height:1">🦁</span>
+    <span class="nav-logo">Safari Planner</span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link active" href="discover.html">Discover / Gundua</a>
+    <a class="nav-link" href="#">My Trip / Safari Yangu</a>
+    <a class="nav-link" href="#">Wildlife / Wanyamapori</a>
+    <a class="nav-link" href="#">Budget / Bajeti</a>
+  </div>
+</nav>
+
+<!-- HERO BAND -->
+<div class="hero-band">
+  <div class="hero-band-inner">
+    <div class="hero-eyebrow">Phase 1 — East Africa · Afrika Mashariki</div>
+    <h1 class="hero-title">Discover <em>13 Parks</em><br>across 3 Countries</h1>
+    <div class="hero-swahili">Gundua Mbuga 13 katika Nchi 3</div>
+
+    <div class="search-wrap">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="search-input" placeholder="Search parks, animals, countries... / Tafuta mbuga, wanyama..." oninput="filterParks()">
+      </div>
+    </div>
+
+    <div class="filter-tabs">
+      <div class="ftab active" onclick="setFilter('all', this)">
+        🌍 All Parks
+        <span class="ftab-count" id="count-all">13</span>
+      </div>
+      <div class="ftab ke" onclick="setFilter('ke', this)">
+        <span class="ftab-flag">🇰🇪</span>
+        Kenya
+        <span class="ftab-count">5</span>
+      </div>
+      <div class="ftab ug" onclick="setFilter('ug', this)">
+        <span class="ftab-flag">🇺🇬</span>
+        Uganda
+        <span class="ftab-count">4</span>
+      </div>
+      <div class="ftab tz" onclick="setFilter('tz', this)">
+        <span class="ftab-flag">🇹🇿</span>
+        Tanzania
+        <span class="ftab-count">4</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="results-header">
+    <div class="results-title">Showing <span id="results-count">13</span> parks · mbuga</div>
+    <select class="sort-select" onchange="sortParks(this.value)">
+      <option value="default">Sort: Featured</option>
+      <option value="az">A → Z</option>
+      <option value="fee-low">Fee: Low first</option>
+      <option value="fee-high">Fee: High first</option>
+    </select>
+  </div>
+
+  <div class="parks-grid" id="parks-grid"></div>
+  <div class="empty" id="empty-state">
+    <span class="empty-icon">🔭</span>
+    <div class="empty-title">No parks found</div>
+    <div class="empty-sub">Try a different search — Jaribu kutafuta tena</div>
+  </div>
+</div>
+
+<!-- BOTTOM BANNER -->
+<div class="bottom-banner">
+  <div class="bottom-banner-title">Ready to plan your safari?</div>
+  <div class="bottom-banner-sub">Uko tayari kupanga safari yako? · Join 200+ travellers on the waitlist</div>
+  <a class="bottom-btn" href="index.html#waitlist">Join the Waitlist — Jiunge Sasa</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">🦁 Safari Planner · safariplanner.co.tz</div>
+  <div class="footer-right">Built in Tanzania 🇹🇿 by Daniel · © 2026</div>
+</footer>
+
+<script>
+const PARKS = [
+  {
+    id: 'masai-mara',
+    c: 'ke',
+    flag: '🇰🇪',
+    icon: '🦁',
+    name: 'Masai Mara',
+    swahili: 'Hifadhi ya Taifa ya Masai Mara',
+    country: 'Kenya',
+    badge: 'Migration Hub',
+    badgeColor: '#006600',
+    season: 'Jul – Oct',
+    seasonSw: 'Julai – Oktoba',
+    fee: '$80',
+    feeNote: 'per person / mtu',
+    animals: ['Lion · Simba', 'Cheetah · Duma', 'Wildebeest · Nyumbu', 'Zebra · Pundamilia', 'Elephant · Ndovu'],
+    highlight: 'Home of the Great Migration — Nyumba ya Msafara Mkuu',
+    stars: 5,
+    featured: true
+  },
+  {
+    id: 'amboseli',
+    c: 'ke',
+    flag: '🇰🇪',
+    icon: '🐘',
+    name: 'Amboseli NP',
+    swahili: 'Mbuga ya Taifa ya Amboseli',
+    country: 'Kenya',
+    badge: 'Elephants',
+    badgeColor: '#005500',
+    season: 'Jun – Oct',
+    seasonSw: 'Juni – Oktoba',
+    fee: '$90',
+    feeNote: 'per person / mtu',
+    animals: ['Elephant · Ndovu', 'Lion · Simba', 'Buffalo · Nyati', 'Giraffe · Twiga'],
+    highlight: 'Iconic elephant herds against Mt. Kilimanjaro backdrop',
+    stars: 5,
+    featured: true
+  },
+  {
+    id: 'samburu',
+    c: 'ke',
+    flag: '🇰🇪',
+    icon: '🦒',
+    name: 'Samburu NR',
+    swahili: 'Hifadhi ya Kitaifa ya Samburu',
+    country: 'Kenya',
+    badge: 'Special Five',
+    badgeColor: '#005500',
+    season: 'Jun – Sep',
+    seasonSw: 'Juni – Septemba',
+    fee: '$65',
+    feeNote: 'per person / mtu',
+    animals: ['Reticulated Giraffe', 'Grevy\'s Zebra', 'Gerenuk · Swala Twiga', 'Beisa Oryx'],
+    highlight: 'Home of the rare Samburu Special Five — Watano Maalum',
+    stars: 4,
+    featured: false
+  },
+  {
+    id: 'nakuru',
+    c: 'ke',
+    flag: '🇰🇪',
+    icon: '🦩',
+    name: 'Lake Nakuru NP',
+    swahili: 'Mbuga ya Ziwa Nakuru',
+    country: 'Kenya',
+    badge: 'Flamingos',
+    badgeColor: '#005500',
+    season: 'Year-round',
+    seasonSw: 'Mwaka mzima',
+    fee: '$60',
+    feeNote: 'per person / mtu',
+    animals: ['Flamingo · Flamingo', 'Rhino · Kifaru', 'Buffalo · Nyati', 'Waterbuck · Kuro'],
+    highlight: 'Famous pink flamingo lake — Ziwa Maarufu la Flamingo',
+    stars: 4,
+    featured: false
+  },
+  {
+    id: 'tsavo',
+    c: 'ke',
+    flag: '🇰🇪',
+    icon: '🐆',
+    name: 'Tsavo East & West',
+    swahili: 'Hifadhi ya Tsavo Mashariki na Magharibi',
+    country: 'Kenya',
+    badge: 'Big Five',
+    badgeColor: '#005500',
+    season: 'Jun – Oct',
+    seasonSw: 'Juni – Oktoba',
+    fee: '$52',
+    feeNote: 'per person / mtu',
+    animals: ['Red Elephant · Ndovu Mwekundu', 'Lion · Simba', 'Leopard · Chui', 'Hippo · Kiboko'],
+    highlight: 'Kenya\'s largest park — Hifadhi Kubwa zaidi Kenya',
+    stars: 4,
+    featured: false
+  },
+  {
+    id: 'bwindi',
+    c: 'ug',
+    flag: '🇺🇬',
+    icon: '🦍',
+    name: 'Bwindi Impenetrable',
+    swahili: 'Msitu Mkubwa wa Bwindi',
+    country: 'Uganda',
+    badge: 'Mountain Gorillas',
+    badgeColor: '#B8192A',
+    season: 'Jun – Sep',
+    seasonSw: 'Juni – Septemba',
+    fee: '$800',
+    feeNote: 'gorilla permit / ruhusa',
+    animals: ['Mountain Gorilla · Gorilla wa Mlima', 'Chimpanzee · Sokwe', 'Forest Elephant', 'L\'Hoest\'s Monkey'],
+    highlight: 'Half the world\'s mountain gorillas live here — Gorilla wa Mlima',
+    stars: 5,
+    featured: true
+  },
+  {
+    id: 'kibale',
+    c: 'ug',
+    flag: '🇺🇬',
+    icon: '🐒',
+    name: 'Kibale Forest NP',
+    swahili: 'Msitu wa Kibale',
+    country: 'Uganda',
+    badge: 'Chimp Trekking',
+    badgeColor: '#B8192A',
+    season: 'Year-round',
+    seasonSw: 'Mwaka mzima',
+    fee: '$150',
+    feeNote: 'chimp permit / ruhusa',
+    animals: ['Chimpanzee · Sokwe', 'Red Colobus Monkey', 'L\'Hoest\'s Monkey', 'Forest Buffalo'],
+    highlight: 'Best chimpanzee tracking in East Africa — Sokwe Bora Afrika Mashariki',
+    stars: 5,
+    featured: true
+  },
+  {
+    id: 'queen-elizabeth',
+    c: 'ug',
+    flag: '🇺🇬',
+    icon: '🦁',
+    name: 'Queen Elizabeth NP',
+    swahili: 'Hifadhi ya Malkia Elizabeth',
+    country: 'Uganda',
+    badge: 'Tree Lions',
+    badgeColor: '#B8192A',
+    season: 'Jun – Sep',
+    seasonSw: 'Juni – Septemba',
+    fee: '$45',
+    feeNote: 'per person / mtu',
+    animals: ['Tree-climbing Lion · Simba wa Miti', 'Hippo · Kiboko', 'Elephant · Ndovu', 'Shoebill Stork · Korongo'],
+    highlight: 'Famous for tree-climbing lions — Simba Wanaopanda Miti',
+    stars: 4,
+    featured: false
+  },
+  {
+    id: 'murchison',
+    c: 'ug',
+    flag: '🇺🇬',
+    icon: '💧',
+    name: 'Murchison Falls NP',
+    swahili: 'Maporomoko ya Murchison',
+    country: 'Uganda',
+    badge: 'Nile Source',
+    badgeColor: '#B8192A',
+    season: 'Dec – Feb',
+    seasonSw: 'Desemba – Februari',
+    fee: '$40',
+    feeNote: 'per person / mtu',
+    animals: ['Nile Crocodile · Mamba', 'Hippo · Kiboko', 'Giraffe · Twiga', 'Shoebill Stork · Korongo'],
+    highlight: 'The Nile squeezed into a 7m gap — Mto Nile Mwembamba',
+    stars: 4,
+    featured: false
+  },
+  {
+    id: 'serengeti',
+    c: 'tz',
+    flag: '🇹🇿',
+    icon: '🌅',
+    name: 'Serengeti NP',
+    swahili: 'Hifadhi ya Taifa ya Serengeti',
+    country: 'Tanzania',
+    badge: 'UNESCO World Heritage',
+    badgeColor: '#1A7A30',
+    season: 'Jun – Oct',
+    seasonSw: 'Juni – Oktoba',
+    fee: '$82',
+    feeNote: 'per person / mtu',
+    animals: ['Wildebeest · Nyumbu', 'Lion · Simba', 'Cheetah · Duma', 'Elephant · Ndovu', 'Leopard · Chui'],
+    highlight: 'The greatest wildlife show on earth — Onyesho Kuu la Wanyama',
+    stars: 5,
+    featured: true
+  },
+  {
+    id: 'ngorongoro',
+    c: 'tz',
+    flag: '🇹🇿',
+    icon: '🦏',
+    name: 'Ngorongoro Crater',
+    swahili: 'Krater ya Ngorongoro',
+    country: 'Tanzania',
+    badge: 'Big Five Crater',
+    badgeColor: '#1A7A30',
+    season: 'Year-round',
+    seasonSw: 'Mwaka mzima',
+    fee: '$823',
+    feeNote: 'per vehicle / gari',
+    animals: ['Black Rhino · Kifaru Cheusi', 'Lion · Simba', 'Elephant · Ndovu', 'Flamingo · Flamingo'],
+    highlight: 'World\'s largest intact caldera — Kaldera Kubwa Duniani',
+    stars: 5,
+    featured: true
+  },
+  {
+    id: 'tarangire',
+    c: 'tz',
+    flag: '🇹🇿',
+    icon: '🐘',
+    name: 'Tarangire NP',
+    swahili: 'Mbuga ya Tarangire',
+    country: 'Tanzania',
+    badge: 'Elephant Paradise',
+    badgeColor: '#1A7A30',
+    season: 'Jul – Oct',
+    seasonSw: 'Julai – Oktoba',
+    fee: '$57',
+    feeNote: 'per person / mtu',
+    animals: ['Elephant · Ndovu', 'Lion · Simba', 'Baobab Trees · Mbuyu', 'Wildebeest · Nyumbu'],
+    highlight: 'Highest elephant concentration in Tanzania — Ndovu Wengi',
+    stars: 4,
+    featured: false
+  },
+  {
+    id: 'manyara',
+    c: 'tz',
+    flag: '🇹🇿',
+    icon: '🦩',
+    name: 'Lake Manyara NP',
+    swahili: 'Mbuga ya Ziwa Manyara',
+    country: 'Tanzania',
+    badge: 'Tree Lions',
+    badgeColor: '#1A7A30',
+    season: 'Jul – Oct',
+    seasonSw: 'Julai – Oktoba',
+    fee: '$53',
+    feeNote: 'per person / mtu',
+    animals: ['Tree-climbing Lion · Simba wa Miti', 'Flamingo · Flamingo', 'Hippo · Kiboko', 'Elephant · Ndovu'],
+    highlight: 'Stunning soda lake with tree-climbing lions — Simba wa Miti',
+    stars: 4,
+    featured: false
+  }
+];
+
+let activeFilter = 'all';
+let searchQuery = '';
+let sortMode = 'default';
+
+function getBadgeBg(c) {
+  return c === 'ke' ? '#00660033' : c === 'ug' ? '#B8192A33' : '#1EB53A33';
+}
+
+function getBadgeColor(c) {
+  return c === 'ke' ? '#7EE47E' : c === 'ug' ? '#F09090' : '#7EE494';
+}
+
+function renderStars(n) {
+  return '★'.repeat(n) + '☆'.repeat(5 - n);
+}
+
+function renderParks() {
+  const grid = document.getElementById('parks-grid');
+  const empty = document.getElementById('empty-state');
+
+  let list = [...PARKS];
+
+  if (activeFilter !== 'all') {
+    list = list.filter(p => p.c === activeFilter);
+  }
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(p =>
+      p.name.toLowerCase().includes(q) ||
+      p.swahili.toLowerCase().includes(q) ||
+      p.country.toLowerCase().includes(q) ||
+      p.animals.some(a => a.toLowerCase().includes(q)) ||
+      p.badge.toLowerCase().includes(q)
+    );
+  }
+
+  if (sortMode === 'az') {
+    list.sort((a, b) => a.name.localeCompare(b.name));
+  } else if (sortMode === 'fee-low') {
+    list.sort((a, b) => parseInt(a.fee.replace('$','')) - parseInt(b.fee.replace('$','')));
+  } else if (sortMode === 'fee-high') {
+    list.sort((a, b) => parseInt(b.fee.replace('$','')) - parseInt(a.fee.replace('$','')));
+  } else {
+    list.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+  }
+
+  document.getElementById('results-count').textContent = list.length;
+
+  if (list.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+
+  empty.style.display = 'none';
+
+  grid.innerHTML = list.map((p, i) => `
+    <div class="park-card ${p.c}" style="animation-delay:${i * 0.06}s" onclick="openPark('${p.id}')">
+      <div class="park-banner ${p.c}">
+        ${p.icon}
+        <div class="park-country-strip">
+          ${p.flag} ${p.country}
+        </div>
+        <div class="park-badge-top" style="background:${getBadgeBg(p.c)};color:${getBadgeColor(p.c)}">
+          ${p.badge}
+        </div>
+      </div>
+      <div class="park-body">
+        <div class="park-name">${p.name}</div>
+        <div class="park-swahili">${p.swahili}</div>
+        <div class="park-meta">
+          <div class="meta-chip">⭐ <strong style="color:${p.stars===5?'#E8A84B':'rgba(245,237,216,0.85)'}">${renderStars(p.stars)}</strong></div>
+          <div class="meta-chip">📅 <strong>${p.season}</strong></div>
+        </div>
+        <div class="park-animals">
+          ${p.animals.slice(0, 3).map(a => `<span class="animal-tag">${a}</span>`).join('')}
+          ${p.animals.length > 3 ? `<span class="animal-tag">+${p.animals.length - 3} more</span>` : ''}
+        </div>
+        <div style="font-size:11px;color:rgba(245,237,216,0.4);font-style:italic;margin-bottom:10px;line-height:1.5">${p.highlight}</div>
+        <div class="park-fee-row">
+          <div>
+            <div class="fee-label">Entry fee · Ada ya Kuingia</div>
+            <div class="fee-amount">${p.fee} <span style="font-size:10px;color:rgba(245,237,216,0.4)">${p.feeNote}</span></div>
+          </div>
+          <button class="plan-btn">Plan This Park →</button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function setFilter(val, el) {
+  activeFilter = val;
+  document.querySelectorAll('.ftab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderParks();
+}
+
+function filterParks() {
+  searchQuery = document.getElementById('search-input').value;
+  renderParks();
+}
+
+function sortParks(val) {
+  sortMode = val;
+  renderParks();
+}
+
+function openPark(id) {
+  const p = PARKS.find(x => x.id === id);
+  if (p) {
+    alert(`${p.icon} ${p.name}\n${p.swahili}\n\n${p.highlight}\n\nEntry: ${p.fee} ${p.feeNote}\nBest time: ${p.season} / ${p.seasonSw}\n\nAnimals: ${p.animals.join(', ')}\n\n— Full park page coming soon! / Ukurasa kamili unakuja hivi karibuni!`);
+  }
+}
+
+renderParks();
+</script>
+</body>
+</html>
