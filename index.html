@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Safari Planner — Plan Your East Africa Safari</title>
+  <meta name="description" content="The smartest way to plan your Kenya, Uganda & Tanzania safari. AI-powered itineraries, wildlife tracking, and budget tools — built in East Africa.">
+  <meta property="og:title" content="Safari Planner — Built in East Africa">
+  <meta property="og:description" content="Plan your Kenya, Uganda & Tanzania safari with AI. Launching soon.">
+  <meta property="og:image" content="https://safariplanner.co.tz/og-image.jpg">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --forest: #1E3A0A;
+      --green: #2D5016;
+      --leaf: #4A7A2A;
+      --gold: #C8860A;
+      --amber: #E8A84B;
+      --sand: #F5EDD8;
+      --dust: #EAE0CC;
+      --bark: #8B6914;
+      --dusk: #2C1A0A;
+      --sky: #D4EBF5;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dusk);
+      color: var(--sand);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE TEXTURE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 18px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(to bottom, rgba(44,26,10,0.95), transparent);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .nav-logo-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .nav-logo-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--sand);
+      letter-spacing: 0.3px;
+    }
+
+    .nav-badge {
+      font-size: 10px;
+      font-weight: 500;
+      background: rgba(200,134,10,0.2);
+      color: var(--amber);
+      border: 1px solid rgba(200,134,10,0.3);
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 120px 40px 80px;
+      overflow: hidden;
+    }
+
+    /* Savanna horizon silhouette */
+    .hero-silhouette {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 280px;
+      background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 280' preserveAspectRatio='none'%3E%3Cpath fill='%231E3A0A' d='M0,200 Q80,140 160,180 Q200,195 240,170 Q260,158 280,165 Q320,178 340,155 Q360,135 380,145 L400,148 Q440,160 480,130 Q520,105 540,120 Q560,132 580,118 Q610,100 640,115 Q680,135 720,110 Q760,88 800,105 Q830,118 860,100 Q890,82 920,95 Q960,112 1000,90 Q1040,68 1080,85 Q1120,102 1160,80 Q1200,58 1240,75 Q1280,92 1320,70 Q1380,45 1440,65 L1440,280 L0,280 Z'/%3E%3C/svg%3E") no-repeat bottom;
+      background-size: 100% 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Acacia tree silhouettes */
+    .hero-trees {
+      position: absolute;
+      bottom: 60px; right: 60px;
+      font-size: 80px;
+      opacity: 0.08;
+      transform: scaleX(-1);
+      user-select: none;
+      pointer-events: none;
+      z-index: 2;
+      line-height: 1;
+    }
+
+    /* Faint grid lines */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,134,10,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,134,10,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      max-width: 720px;
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 24px;
+    }
+
+    .hero-eyebrow-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .hero-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(42px, 7vw, 80px);
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--sand);
+      margin-bottom: 10px;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      color: var(--amber);
+    }
+
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 20px);
+      font-weight: 300;
+      color: rgba(245,237,216,0.65);
+      line-height: 1.6;
+      margin-bottom: 40px;
+      max-width: 520px;
+    }
+
+    /* ── WAITLIST FORM ── */
+    .waitlist-form {
+      display: flex;
+      gap: 0;
+      max-width: 480px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(200,134,10,0.3);
+      background: rgba(30,58,10,0.4);
+      backdrop-filter: blur(8px);
+      margin-bottom: 20px;
+    }
+
+    .waitlist-form input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      padding: 16px 20px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--sand);
+      min-width: 0;
+    }
+
+    .waitlist-form input::placeholder {
+      color: rgba(245,237,216,0.35);
+    }
+
+    .waitlist-form button {
+      background: var(--gold);
+      border: none;
+      padding: 16px 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+      letter-spacing: 0.3px;
+    }
+
+    .waitlist-form button:hover {
+      background: var(--amber);
+    }
+
+    .waitlist-success {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--amber);
+      padding: 16px 0;
+    }
+
+    .hero-trust {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 12px;
+      color: rgba(245,237,216,0.4);
+      font-weight: 400;
+    }
+
+    .trust-sep {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: rgba(245,237,216,0.2);
+    }
+
+    /* ── COUNTRY FLAGS ROW ── */
+    .countries-row {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      gap: 12px;
+      margin-top: 60px;
+      flex-wrap: wrap;
+    }
+
+    .country-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 400;
+      color: rgba(245,237,216,0.7);
+      transition: all 0.2s;
+    }
+
+    .country-pill:hover {
+      background: rgba(200,134,10,0.12);
+      border-color: rgba(200,134,10,0.3);
+      color: var(--amber);
+    }
+
+    .cpflag { font-size: 16px; line-height: 1; }
+
+    .cpcount {
+      font-size: 10px;
+      background: rgba(200,134,10,0.2);
+      color: var(--amber);
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    /* ── FEATURES STRIP ── */
+    .features {
+      position: relative;
+      z-index: 3;
+      background: var(--forest);
+      padding: 80px 40px;
+    }
+
+    .features-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .features-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      text-align: center;
+      color: var(--sand);
+      margin-bottom: 60px;
+      line-height: 1.2;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: rgba(245,237,216,0.04);
+      border: 1px solid rgba(245,237,216,0.08);
+      border-radius: 16px;
+      padding: 28px 24px;
+      transition: all 0.25s;
+    }
+
+    .feature-card:hover {
+      background: rgba(200,134,10,0.08);
+      border-color: rgba(200,134,10,0.2);
+      transform: translateY(-2px);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      line-height: 1;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .feature-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--sand);
+      margin-bottom: 8px;
+    }
+
+    .feature-desc {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245,237,216,0.55);
+      line-height: 1.65;
+    }
+
+    .feature-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-top: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .tag-core { background: rgba(45,80,22,0.6); color: #7EC44B; border: 1px solid rgba(45,80,22,0.8); }
+    .tag-ai { background: rgba(200,134,10,0.2); color: var(--amber); border: 1px solid rgba(200,134,10,0.3); }
+    .tag-unique { background: rgba(184,25,42,0.2); color: #F08090; border: 1px solid rgba(184,25,42,0.3); }
+
+    /* ── PARKS PREVIEW ── */
+    .parks {
+      background: #0F1F05;
+      padding: 80px 40px;
+    }
+
+    .parks-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .parks-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 3.5vw, 38px);
+      font-weight: 700;
+      text-align: center;
+      color: var(--sand);
+      margin-bottom: 50px;
+    }
+
+    .parks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+      max-width: 900px;
+      margin: 0 auto 40px;
+    }
+
+    .park-card {
+      background: rgba(245,237,216,0.04);
+      border: 1px solid rgba(245,237,216,0.07);
+      border-radius: 12px;
+      padding: 16px;
+      transition: all 0.2s;
+      cursor: default;
+    }
+
+    .park-card:hover {
+      border-color: rgba(200,134,10,0.3);
+      background: rgba(200,134,10,0.06);
+    }
+
+    .park-flag { font-size: 14px; line-height: 1; margin-bottom: 8px; display: block; }
+    .park-name { font-size: 13px; font-weight: 500; color: var(--sand); margin-bottom: 3px; }
+    .park-ctry { font-size: 11px; color: rgba(245,237,216,0.35); }
+
+    .park-card .park-badge {
+      display: inline-block;
+      font-size: 9px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 8px;
+      margin-top: 7px;
+      color: #fff;
+    }
+
+    /* ── SOCIAL PROOF / BUILT HERE ── */
+    .built-here {
+      background: var(--green);
+      padding: 60px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .built-here::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='1' fill='rgba(245,237,216,0.05)'/%3E%3C/svg%3E");
+      background-size: 30px 30px;
+    }
+
+    .built-flag {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 16px;
+      display: block;
+      position: relative;
+    }
+
+    .built-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3.5vw, 34px);
+      font-weight: 700;
+      color: var(--sand);
+      margin-bottom: 12px;
+      position: relative;
+    }
+
+    .built-sub {
+      font-size: 15px;
+      font-weight: 300;
+      color: rgba(245,237,216,0.65);
+      max-width: 480px;
+      margin: 0 auto 32px;
+      line-height: 1.65;
+      position: relative;
+    }
+
+    .built-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
+    .bs-item {
+      text-align: center;
+    }
+
+    .bs-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--amber);
+      line-height: 1;
+    }
+
+    .bs-label {
+      font-size: 12px;
+      color: rgba(245,237,216,0.5);
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    /* ── FOOTER CTA ── */
+    .footer-cta {
+      background: var(--dusk);
+      padding: 80px 40px;
+      text-align: center;
+      border-top: 1px solid rgba(245,237,216,0.06);
+    }
+
+    .footer-cta-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(24px, 4vw, 44px);
+      font-weight: 700;
+      color: var(--sand);
+      margin-bottom: 12px;
+    }
+
+    .footer-cta-sub {
+      font-size: 15px;
+      color: rgba(245,237,216,0.5);
+      margin-bottom: 36px;
+      font-weight: 300;
+    }
+
+    .footer-waitlist {
+      display: flex;
+      gap: 0;
+      max-width: 420px;
+      margin: 0 auto 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(200,134,10,0.3);
+    }
+
+    .footer-waitlist input {
+      flex: 1;
+      background: rgba(30,58,10,0.4);
+      border: none;
+      outline: none;
+      padding: 14px 18px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--sand);
+      min-width: 0;
+    }
+
+    .footer-waitlist input::placeholder { color: rgba(245,237,216,0.3); }
+
+    .footer-waitlist button {
+      background: var(--gold);
+      border: none;
+      padding: 14px 24px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .footer-waitlist button:hover { background: var(--amber); }
+
+    .footer-bottom {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(245,237,216,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: gap;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: rgba(245,237,216,0.4);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(245,237,216,0.25);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 640px) {
+      nav { padding: 16px 20px; }
+      .hero { padding: 100px 20px 60px; }
+      .features, .parks, .built-here, .footer-cta { padding: 60px 20px; }
+      .waitlist-form { flex-direction: column; border-radius: 12px; }
+      .waitlist-form button { border-radius: 0 0 11px 11px; padding: 14px; }
+      .footer-bottom { justify-content: center; text-align: center; }
+      .hero-trees { font-size: 50px; right: 20px; }
+      .built-stats { gap: 24px; }
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-content > * {
+      animation: fadeUp 0.7s ease forwards;
+      opacity: 0;
+    }
+
+    .hero-eyebrow { animation-delay: 0.1s; }
+    .hero-headline { animation-delay: 0.2s; }
+    .hero-sub { animation-delay: 0.35s; }
+    .waitlist-form { animation-delay: 0.5s; }
+    .hero-trust { animation-delay: 0.6s; }
+    .countries-row { animation: fadeUp 0.7s 0.7s ease forwards; opacity: 0; }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-brand" href="#">
+      <span class="nav-logo-icon">🦁</span>
+      <span class="nav-logo-text">Safari Planner</span>
+    </a>
+    <span class="nav-badge">Coming Soon</span>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-silhouette"></div>
+    <div class="hero-trees">🌳🌴🌳</div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Now Building · safariplanner.co.tz
+      </div>
+
+      <h1 class="hero-headline">
+        Your <em>East Africa</em><br>safari, perfectly planned
+      </h1>
+
+      <p class="hero-sub">
+        AI-powered itineraries, wildlife tracking, and budget tools for Kenya, Uganda &amp; Tanzania — built right here in East Africa.
+      </p>
+
+      <div class="waitlist-form" id="hero-form">
+        <input type="email" id="hero-email" placeholder="Your email address" autocomplete="email">
+        <button onclick="joinWaitlist('hero')">Join the Waitlist</button>
+      </div>
+
+      <div class="waitlist-success" id="hero-success">
+        <span style="font-size:18px">🎉</span>
+        You're on the list! We'll email you when we launch.
+      </div>
+
+      <div class="hero-trust">
+        <span>Free to join</span>
+        <span class="trust-sep"></span>
+        <span>No spam, ever</span>
+        <span class="trust-sep"></span>
+        <span>Early access for waitlist members</span>
+      </div>
+    </div>
+
+    <div class="countries-row">
+      <div class="country-pill">
+        <span class="cpflag">🇰🇪</span>
+        Kenya
+        <span class="cpcount">5 parks</span>
+      </div>
+      <div class="country-pill">
+        <span class="cpflag">🇺🇬</span>
+        Uganda
+        <span class="cpcount">4 parks</span>
+      </div>
+      <div class="country-pill">
+        <span class="cpflag">🇹🇿</span>
+        Tanzania
+        <span class="cpcount">4 parks</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="features-label">What you can do</div>
+    <h2 class="features-title">Everything you need<br>in one app</h2>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <span class="feature-icon">🗺️</span>
+        <div class="feature-name">Discover Parks</div>
+        <p class="feature-desc">Browse all 13 parks across Kenya, Uganda &amp; Tanzania. Best seasons, wildlife, park fees, and insider tips.</p>
+        <span class="feature-tag tag-core">Core Feature</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">📋</span>
+        <div class="feature-name">Build Itineraries</div>
+        <p class="feature-desc">Plan your trip day by day. Add lodges, game drives, and activities. Save and share your complete itinerary.</p>
+        <span class="feature-tag tag-core">Core Feature</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🤖</span>
+        <div class="feature-name">AI Trip Planner</div>
+        <p class="feature-desc">Tell us your dream safari. Our AI builds a personalised itinerary for your budget, interests, and travel dates.</p>
+        <span class="feature-tag tag-ai">AI Powered</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">🦍</span>
+        <div class="feature-name">Wildlife Tracker</div>
+        <p class="feature-desc">Log every sighting on your safari. Big Five, mountain gorillas, chimpanzees, shoebill stork — track them all.</p>
+        <span class="feature-tag tag-unique">Uganda Exclusive</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">💰</span>
+        <div class="feature-name">Budget Calculator</div>
+        <p class="feature-desc">Real park fees for KE, UG &amp; TZ. Gorilla permit costs. Lodge price tiers. No hidden surprises.</p>
+        <span class="feature-tag tag-core">Core Feature</span>
+      </div>
+      <div class="feature-card reveal">
+        <span class="feature-icon">📱</span>
+        <div class="feature-name">Works Offline</div>
+        <p class="feature-desc">Download your itinerary and park maps before you go. Works deep in the bush with no signal. Coming soon.</p>
+        <span class="feature-tag tag-core">Coming Soon</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARKS -->
+  <section class="parks">
+    <div class="parks-label">Phase 1 Coverage</div>
+    <h2 class="parks-title">13 Parks. 3 Countries.<br>One App.</h2>
+    <div class="parks-grid">
+      <div class="park-card reveal">
+        <span class="park-flag">🇰🇪</span>
+        <div class="park-name">Masai Mara</div>
+        <div class="park-ctry">Kenya</div>
+        <span class="park-badge" style="background:#00660066;color:#7EC44B">Migration</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇰🇪</span>
+        <div class="park-name">Amboseli NP</div>
+        <div class="park-ctry">Kenya</div>
+        <span class="park-badge" style="background:#00660066;color:#7EC44B">Elephants</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇰🇪</span>
+        <div class="park-name">Samburu NR</div>
+        <div class="park-ctry">Kenya</div>
+        <span class="park-badge" style="background:#00660066;color:#7EC44B">Special 5</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇰🇪</span>
+        <div class="park-name">Lake Nakuru</div>
+        <div class="park-ctry">Kenya</div>
+        <span class="park-badge" style="background:#00660066;color:#7EC44B">Flamingos</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇰🇪</span>
+        <div class="park-name">Tsavo East &amp; West</div>
+        <div class="park-ctry">Kenya</div>
+        <span class="park-badge" style="background:#00660066;color:#7EC44B">Big Five</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇺🇬</span>
+        <div class="park-name">Bwindi Forest</div>
+        <div class="park-ctry">Uganda</div>
+        <span class="park-badge" style="background:#B8192A55;color:#F08090">Gorillas</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇺🇬</span>
+        <div class="park-name">Kibale Forest</div>
+        <div class="park-ctry">Uganda</div>
+        <span class="park-badge" style="background:#B8192A55;color:#F08090">Chimps</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇺🇬</span>
+        <div class="park-name">Queen Elizabeth</div>
+        <div class="park-ctry">Uganda</div>
+        <span class="park-badge" style="background:#B8192A55;color:#F08090">Tree Lions</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇺🇬</span>
+        <div class="park-name">Murchison Falls</div>
+        <div class="park-ctry">Uganda</div>
+        <span class="park-badge" style="background:#B8192A55;color:#F08090">Nile Source</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇹🇿</span>
+        <div class="park-name">Serengeti NP</div>
+        <div class="park-ctry">Tanzania</div>
+        <span class="park-badge" style="background:#1EB53A55;color:#7EE494">Migration</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇹🇿</span>
+        <div class="park-name">Ngorongoro</div>
+        <div class="park-ctry">Tanzania</div>
+        <span class="park-badge" style="background:#1EB53A55;color:#7EE494">Big Five</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇹🇿</span>
+        <div class="park-name">Tarangire NP</div>
+        <div class="park-ctry">Tanzania</div>
+        <span class="park-badge" style="background:#1EB53A55;color:#7EE494">Elephants</span>
+      </div>
+      <div class="park-card reveal">
+        <span class="park-flag">🇹🇿</span>
+        <div class="park-name">Lake Manyara</div>
+        <div class="park-ctry">Tanzania</div>
+        <span class="park-badge" style="background:#1EB53A55;color:#7EE494">Flamingos</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUILT IN EAST AFRICA -->
+  <section class="built-here">
+    <span class="built-flag">🇹🇿</span>
+    <h2 class="built-title">Built in Tanzania,<br>for East Africa</h2>
+    <p class="built-sub">We live here. We know the parks, the seasons, the guides, and what it actually costs. Safari Planner is built by someone who understands East Africa — not a foreign tech company guessing.</p>
+    <div class="built-stats">
+      <div class="bs-item">
+        <div class="bs-num">13</div>
+        <div class="bs-label">Parks at launch</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-num">3</div>
+        <div class="bs-label">Countries covered</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-num">30+</div>
+        <div class="bs-label">Wildlife species</div>
+      </div>
+      <div class="bs-item">
+        <div class="bs-num">Free</div>
+        <div class="bs-label">To get started</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta">
+    <h2 class="footer-cta-title">Be first to plan<br>your perfect safari</h2>
+    <p class="footer-cta-sub">Join the waitlist. Early access. No spam.</p>
+
+    <div class="footer-waitlist" id="footer-form">
+      <input type="email" id="footer-email" placeholder="your@email.com">
+      <button onclick="joinWaitlist('footer')">Join Waitlist</button>
+    </div>
+
+    <div class="waitlist-success" id="footer-success" style="justify-content:center">
+      <span style="font-size:18px">🎉</span>
+      You're on the list! Talk soon.
+    </div>
+
+    <p style="font-size:12px;color:rgba(245,237,216,0.25);margin-top:8px">
+      hello@safariplanner.co.tz
+    </p>
+
+    <div class="footer-bottom">
+      <span class="footer-brand">Safari Planner</span>
+      <span class="footer-copy">© 2026 safariplanner.co.tz · Built in Tanzania 🇹🇿</span>
+    </div>
+  </section>
+
+  <script>
+    // Waitlist form handler
+    function joinWaitlist(loc) {
+      const email = document.getElementById(loc === 'hero' ? 'hero-email' : 'footer-email').value;
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address.');
+        return;
+      }
+      document.getElementById(loc + '-form').style.display = 'none';
+      document.getElementById(loc + '-success').style.display = 'flex';
+      // TODO: Replace with your Supabase insert
+      console.log('Waitlist signup:', email);
+      // Example Supabase call (uncomment when ready):
+      // supabase.from('waitlist').insert([{ email, source: loc, created_at: new Date() }])
+    }
+
+    // Enter key on hero form
+    document.getElementById('hero-email').addEventListener('keydown', e => {
+      if (e.key === 'Enter') joinWaitlist('hero');
+    });
+    document.getElementById('footer-email').addEventListener('keydown', e => {
+      if (e.key === 'Enter') joinWaitlist('footer');
+    });
+
+    // Scroll reveal
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      el.style.transitionDelay = (i % 4) * 0.08 + 's';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
