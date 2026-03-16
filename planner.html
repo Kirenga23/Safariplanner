@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Trip — Safari Planner | Safari Yangu</title>
+  <meta name="description" content="Plan your East Africa safari day by day. Build your perfect itinerary across Kenya, Uganda and Tanzania.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --forest: #1E3A0A;
+      --green: #2D5016;
+      --leaf: #4A7A2A;
+      --gold: #C8860A;
+      --amber: #E8A84B;
+      --sand: #F5EDD8;
+      --dusk: #2C1A0A;
+      --ke: #006600;
+      --ug: #B8192A;
+      --tz: #1EB53A;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--dusk);
+      color: var(--sand);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+    }
+
+    /* NAV */
+    nav {
+      background: var(--forest);
+      padding: 0 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 60px;
+      border-bottom: 1px solid rgba(245,237,216,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    .nav-brand { display:flex;align-items:center;gap:8px;text-decoration:none; }
+    .nav-logo { font-family:'Playfair Display',serif;font-size:17px;color:var(--sand); }
+    .nav-links { display:flex;gap:6px; }
+    .nav-link { color:rgba(245,237,216,.55);text-decoration:none;font-size:13px;font-weight:400;padding:6px 12px;border-radius:8px;transition:all .2s; }
+    .nav-link:hover { color:var(--sand);background:rgba(255,255,255,.06); }
+    .nav-link.active { color:var(--amber);background:rgba(200,134,10,.12); }
+
+    /* HERO BAND */
+    .hero-band {
+      background: var(--green);
+      padding: 36px 40px 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-band::after {
+      content:'';position:absolute;inset:0;
+      background-image: linear-gradient(rgba(200,134,10,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(200,134,10,.05) 1px,transparent 1px);
+      background-size:40px 40px;pointer-events:none;
+    }
+    .hero-inner { max-width:1100px;margin:0 auto;position:relative;z-index:1; }
+    .hero-eyebrow { font-size:11px;font-weight:500;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:8px; }
+    .hero-title { font-family:'Playfair Display',serif;font-size:clamp(24px,4vw,40px);font-weight:900;color:var(--sand);line-height:1.1;margin-bottom:4px; }
+    .hero-title em { font-style:italic;color:var(--amber); }
+    .hero-swahili { font-family:'Playfair Display',serif;font-size:clamp(14px,2vw,18px);font-style:italic;color:rgba(245,237,216,.4);font-weight:700; }
+
+    /* LAYOUT */
+    .layout {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 40px 60px;
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* PANELS */
+    .panel {
+      background: rgba(245,237,216,.04);
+      border: 1px solid rgba(245,237,216,.09);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .panel-hdr {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(245,237,216,.07);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(0,0,0,.15);
+    }
+    .panel-title { font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--sand); }
+    .panel-sub { font-size:11px;color:rgba(245,237,216,.4);margin-top:1px; }
+    .panel-body { padding: 20px; }
+
+    /* TRIP SETUP FORM */
+    .form-grid { display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px; }
+    .form-group { display:flex;flex-direction:column;gap:5px; }
+    .form-group.full { grid-column:1/-1; }
+    .form-label { font-size:11px;font-weight:500;color:rgba(245,237,216,.55);letter-spacing:.5px;text-transform:uppercase; }
+    .form-input {
+      background: rgba(0,0,0,.25);
+      border: 1px solid rgba(245,237,216,.12);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--sand);
+      font-family:'DM Sans',sans-serif;
+      font-size:13px;
+      font-weight:300;
+      outline: none;
+      transition: border-color .2s;
+      width: 100%;
+    }
+    .form-input:focus { border-color: rgba(200,134,10,.5); }
+    .form-input option { background:#1E3A0A;color:var(--sand); }
+
+    /* COUNTRY SELECTOR */
+    .country-pick { display:flex;gap:8px;flex-wrap:wrap; }
+    .cpick {
+      display:flex;align-items:center;gap:6px;
+      padding:8px 14px;border-radius:100px;
+      border:1.5px solid rgba(245,237,216,.15);
+      background:rgba(0,0,0,.2);
+      cursor:pointer;font-family:'DM Sans',sans-serif;
+      font-size:12px;font-weight:500;
+      color:rgba(245,237,216,.55);transition:all .2s;user-select:none;
+    }
+    .cpick.ke.on { background:rgba(0,102,0,.2);border-color:#00AA00;color:#7EE47E; }
+    .cpick.ug.on { background:rgba(184,25,42,.2);border-color:#E03050;color:#F09090; }
+    .cpick.tz.on { background:rgba(30,181,58,.2);border-color:#1EB53A;color:#7EE494; }
+
+    /* PRIMARY BUTTON */
+    .btn-primary {
+      background: var(--gold);
+      border: none;
+      border-radius: 10px;
+      padding: 12px 24px;
+      color: #fff;
+      font-family:'DM Sans',sans-serif;
+      font-size:13px;font-weight:500;
+      cursor:pointer;transition:background .2s;
+      width:100%;margin-top:4px;
+    }
+    .btn-primary:hover { background:var(--amber); }
+    .btn-ghost {
+      background:rgba(245,237,216,.06);
+      border:1px solid rgba(245,237,216,.12);
+      border-radius:8px;padding:8px 16px;
+      color:rgba(245,237,216,.7);
+      font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;
+      cursor:pointer;transition:all .2s;
+    }
+    .btn-ghost:hover { background:rgba(245,237,216,.1);color:var(--sand); }
+    .btn-gold {
+      background:rgba(200,134,10,.15);border:1px solid rgba(200,134,10,.3);
+      border-radius:8px;padding:7px 14px;
+      color:var(--amber);font-family:'DM Sans',sans-serif;
+      font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;
+    }
+    .btn-gold:hover { background:rgba(200,134,10,.3); }
+
+    /* DAYS */
+    .days-list { display:flex;flex-direction:column;gap:14px; }
+    .day-card {
+      background:rgba(0,0,0,.2);
+      border:1px solid rgba(245,237,216,.08);
+      border-radius:14px;
+      overflow:hidden;
+      transition:border-color .2s;
+    }
+    .day-card:hover { border-color:rgba(245,237,216,.15); }
+    .day-hdr {
+      display:flex;align-items:center;gap:12px;
+      padding:12px 16px;
+      border-bottom:1px solid rgba(245,237,216,.06);
+      cursor:pointer;user-select:none;
+    }
+    .day-num-badge {
+      width:32px;height:32px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:700;color:#fff;flex-shrink:0;
+    }
+    .day-hdr-text { flex:1; }
+    .day-hdr-title { font-size:13px;font-weight:700;color:var(--sand); }
+    .day-hdr-sub { font-size:11px;color:rgba(245,237,216,.4);margin-top:1px; }
+    .day-toggle { font-size:12px;color:rgba(245,237,216,.3);transition:transform .2s; }
+    .day-toggle.open { transform:rotate(90deg); }
+    .day-body { padding:14px 16px;display:none; }
+    .day-body.open { display:block; }
+
+    /* PARK SELECTOR IN DAY */
+    .park-selector { margin-bottom:14px; }
+    .park-selector-label { font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:rgba(245,237,216,.4);margin-bottom:7px; }
+    .park-options { display:flex;flex-wrap:wrap;gap:6px; }
+    .park-opt {
+      display:flex;align-items:center;gap:5px;
+      padding:5px 10px;border-radius:8px;
+      border:1px solid rgba(245,237,216,.1);
+      background:rgba(245,237,216,.04);
+      cursor:pointer;font-family:'DM Sans',sans-serif;
+      font-size:11px;color:rgba(245,237,216,.6);transition:all .15s;
+    }
+    .park-opt:hover { border-color:rgba(200,134,10,.3);color:var(--sand); }
+    .park-opt.selected { border-color:var(--gold);background:rgba(200,134,10,.12);color:var(--amber); }
+    .park-opt-flag { font-size:13px;line-height:1; }
+
+    /* ACTIVITIES */
+    .acts-list { display:flex;flex-direction:column;gap:6px;margin-bottom:10px; }
+    .act-item {
+      display:flex;align-items:center;gap:8px;
+      background:rgba(245,237,216,.04);
+      border:1px solid rgba(245,237,216,.07);
+      border-radius:8px;padding:8px 12px;
+    }
+    .act-time { font-size:11px;color:var(--amber);font-weight:700;min-width:40px; }
+    .act-icon { font-size:16px;line-height:1; }
+    .act-name { font-size:12px;color:rgba(245,237,216,.85);flex:1; }
+    .act-tag { font-size:9px;font-weight:700;padding:2px 7px;border-radius:5px;color:#fff;white-space:nowrap; }
+    .act-del {
+      font-size:14px;color:rgba(245,237,216,.2);cursor:pointer;
+      background:none;border:none;padding:0 2px;transition:color .15s;line-height:1;
+    }
+    .act-del:hover { color:rgba(220,80,80,.7); }
+
+    /* ADD ACTIVITY ROW */
+    .add-act-row { display:flex;gap:7px;flex-wrap:wrap; }
+    .add-act-input {
+      flex:1;min-width:120px;
+      background:rgba(0,0,0,.25);border:1px solid rgba(245,237,216,.1);
+      border-radius:8px;padding:8px 12px;
+      color:var(--sand);font-family:'DM Sans',sans-serif;
+      font-size:12px;outline:none;transition:border-color .2s;
+    }
+    .add-act-input:focus { border-color:rgba(200,134,10,.4); }
+    .add-act-select {
+      background:rgba(0,0,0,.25);border:1px solid rgba(245,237,216,.1);
+      border-radius:8px;padding:8px 10px;
+      color:rgba(245,237,216,.7);font-family:'DM Sans',sans-serif;
+      font-size:12px;outline:none;cursor:pointer;
+    }
+    .add-act-select option { background:#1E3A0A; }
+
+    /* NOTES */
+    .day-notes {
+      width:100%;margin-top:10px;
+      background:rgba(0,0,0,.2);border:1px solid rgba(245,237,216,.08);
+      border-radius:8px;padding:10px 12px;
+      color:rgba(245,237,216,.7);font-family:'DM Sans',sans-serif;
+      font-size:12px;font-weight:300;resize:vertical;outline:none;
+      min-height:56px;transition:border-color .2s;
+    }
+    .day-notes:focus { border-color:rgba(200,134,10,.3); }
+
+    /* ADD DAY BUTTON */
+    .add-day-btn {
+      width:100%;
+      background:rgba(200,134,10,.08);
+      border:1.5px dashed rgba(200,134,10,.3);
+      border-radius:12px;padding:14px;
+      color:var(--amber);font-family:'DM Sans',sans-serif;
+      font-size:13px;font-weight:500;cursor:pointer;
+      transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;
+    }
+    .add-day-btn:hover { background:rgba(200,134,10,.14);border-color:rgba(200,134,10,.5); }
+
+    /* SIDEBAR */
+    .sidebar { position:sticky;top:80px; }
+
+    .summary-card {
+      background:var(--forest);
+      border:1px solid rgba(245,237,216,.09);
+      border-radius:16px;padding:18px;
+      margin-bottom:16px;
+    }
+    .summary-title { font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--sand);margin-bottom:14px;display:flex;align-items:center;gap:8px; }
+    .sum-row { display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid rgba(245,237,216,.06); }
+    .sum-row:last-of-type { border-bottom:none; }
+    .sum-label { font-size:12px;color:rgba(245,237,216,.5); }
+    .sum-val { font-size:12px;font-weight:500;color:var(--sand); }
+    .sum-val.gold { color:var(--amber);font-weight:700; }
+
+    .countries-progress { margin:12px 0; }
+    .cp-row { display:flex;align-items:center;gap:10px;margin-bottom:8px; }
+    .cp-flag { font-size:16px;line-height:1;width:22px; }
+    .cp-label { font-size:11px;color:rgba(245,237,216,.6);width:60px; }
+    .cp-bar { flex:1;background:rgba(245,237,216,.08);border-radius:3px;height:5px;overflow:hidden; }
+    .cp-fill { height:100%;border-radius:3px;transition:width .4s; }
+    .cp-count { font-size:10px;color:rgba(245,237,216,.4);min-width:20px;text-align:right; }
+
+    /* TIPS CARD */
+    .tips-card {
+      background:rgba(200,134,10,.08);
+      border:1px solid rgba(200,134,10,.2);
+      border-radius:14px;padding:16px;
+      margin-bottom:16px;
+    }
+    .tips-title { font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:10px; }
+    .tip-item { display:flex;gap:8px;margin-bottom:8px;font-size:12px;color:rgba(245,237,216,.65);line-height:1.5; }
+    .tip-item:last-child { margin-bottom:0; }
+    .tip-icon { font-size:14px;flex-shrink:0;line-height:1.3; }
+
+    /* SHARE / EXPORT */
+    .action-row { display:flex;gap:8px; }
+    .action-btn {
+      flex:1;background:rgba(245,237,216,.06);
+      border:1px solid rgba(245,237,216,.12);
+      border-radius:10px;padding:10px 8px;
+      color:rgba(245,237,216,.7);font-family:'DM Sans',sans-serif;
+      font-size:11px;font-weight:500;cursor:pointer;
+      transition:all .2s;text-align:center;
+    }
+    .action-btn:hover { background:rgba(245,237,216,.1);color:var(--sand); }
+
+    /* EMPTY STATE */
+    .empty-trip {
+      text-align:center;padding:48px 24px;
+      border:1.5px dashed rgba(245,237,216,.1);
+      border-radius:16px;
+    }
+    .empty-ic { font-size:48px;display:block;margin-bottom:12px; }
+    .empty-title { font-family:'Playfair Display',serif;font-size:20px;color:var(--sand);margin-bottom:6px; }
+    .empty-sub { font-size:13px;color:rgba(245,237,216,.4);line-height:1.6; }
+
+    /* TOAST */
+    .toast {
+      position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);
+      background:var(--green);border:1px solid rgba(200,134,10,.3);
+      border-radius:10px;padding:12px 24px;
+      font-size:13px;font-weight:500;color:var(--sand);
+      z-index:999;transition:transform .3s;white-space:nowrap;
+    }
+    .toast.show { transform:translateX(-50%) translateY(0); }
+
+    /* MOBILE */
+    @media (max-width:780px) {
+      nav { padding:0 16px; }
+      .hero-band { padding:28px 16px 24px; }
+      .layout { grid-template-columns:1fr;padding:20px 16px 40px;gap:16px; }
+      .sidebar { position:static; }
+      .form-grid { grid-template-columns:1fr; }
+      .nav-links { display:none; }
+    }
+
+    @keyframes slideIn {
+      from { opacity:0;transform:translateY(12px); }
+      to { opacity:1;transform:translateY(0); }
+    }
+    .day-card { animation:slideIn .3s ease forwards; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="index.html">
+    <span style="font-size:20px;line-height:1">🦁</span>
+    <span class="nav-logo">Safari Planner</span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="discover.html">Discover / Gundua</a>
+    <a class="nav-link active" href="#">My Trip / Safari Yangu</a>
+    <a class="nav-link" href="#">Wildlife / Wanyamapori</a>
+    <a class="nav-link" href="#">Budget / Bajeti</a>
+  </div>
+</nav>
+
+<!-- HERO BAND -->
+<div class="hero-band">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">My Trip · Safari Yangu</div>
+    <h1 class="hero-title">Build Your <em>Perfect Safari</em></h1>
+    <div class="hero-swahili">Panga Safari Yako Kamili · Kenya · Uganda · Tanzania</div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT: MAIN BUILDER -->
+  <div class="main-col">
+
+    <!-- TRIP SETUP -->
+    <div class="panel" id="setup-panel">
+      <div class="panel-hdr">
+        <div>
+          <div class="panel-title">🗺️ Trip Details · Maelezo ya Safari</div>
+          <div class="panel-sub">Set up your trip first · Kwanza weka maelezo ya safari</div>
+        </div>
+        <button class="btn-ghost" id="setup-toggle" onclick="toggleSetup()">Hide ↑</button>
+      </div>
+      <div class="panel-body" id="setup-body">
+        <div class="form-grid">
+          <div class="form-group full">
+            <label class="form-label">Trip Name · Jina la Safari</label>
+            <input class="form-input" id="trip-name" type="text" placeholder="e.g. East Africa Grand Circuit · Safari ya Afrika Mashariki" oninput="updateSummary()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Start Date · Tarehe ya Kuanza</label>
+            <input class="form-input" id="trip-start" type="date" oninput="updateSummary()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date · Tarehe ya Kumalizia</label>
+            <input class="form-input" id="trip-end" type="date" oninput="updateSummary()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Travelers · Wasafiri</label>
+            <select class="form-input" id="trip-travelers" onchange="updateSummary()">
+              <option value="1">1 Person · Mtu 1</option>
+              <option value="2" selected>2 People · Watu 2</option>
+              <option value="3">3 People · Watu 3</option>
+              <option value="4">4 People · Watu 4</option>
+              <option value="5">5+ People · Watu 5+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Budget Range · Bajeti</label>
+            <select class="form-input" id="trip-budget" onchange="updateSummary()">
+              <option value="budget">Budget ($50–100/night)</option>
+              <option value="mid" selected>Mid-range ($100–300/night)</option>
+              <option value="luxury">Luxury ($300–800/night)</option>
+              <option value="ultra">Ultra-luxury ($800+/night)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label class="form-label" style="margin-bottom:8px">Countries · Nchi (select all you'll visit)</label>
+          <div class="country-pick">
+            <div class="cpick ke" onclick="toggleCountry(this,'ke')">🇰🇪 Kenya</div>
+            <div class="cpick ug" onclick="toggleCountry(this,'ug')">🇺🇬 Uganda</div>
+            <div class="cpick tz on" onclick="toggleCountry(this,'tz')">🇹🇿 Tanzania</div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="startBuilding()">
+          Start Building My Itinerary · Anza Kupanga Safari →
+        </button>
+      </div>
+    </div>
+
+    <!-- DAYS BUILDER -->
+    <div class="panel" id="days-panel" style="display:none">
+      <div class="panel-hdr">
+        <div>
+          <div class="panel-title" id="days-panel-title">📋 My Itinerary · Ratiba Yangu</div>
+          <div class="panel-sub" id="days-panel-sub">Add your days below · Ongeza siku zako hapa chini</div>
+        </div>
+        <button class="btn-ghost" onclick="clearTrip()">Start Over · Anza Upya</button>
+      </div>
+      <div class="panel-body">
+        <div class="days-list" id="days-list"></div>
+        <button class="add-day-btn" onclick="addDay()">
+          <span style="font-size:18px;line-height:1">+</span>
+          Add Day · Ongeza Siku
+        </button>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE (before setup) -->
+    <div class="empty-trip" id="empty-state">
+      <span class="empty-ic">🦁</span>
+      <div class="empty-title">Start Your Safari Plan</div>
+      <div class="empty-sub">Fill in your trip details above to begin building<br>your East Africa itinerary · Jaza maelezo ya safari yako kuanza kupanga</div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- SUMMARY -->
+    <div class="summary-card">
+      <div class="summary-title">📊 Trip Summary · Muhtasari</div>
+      <div class="sum-row"><span class="sum-label">Trip name</span><span class="sum-val" id="sum-name">—</span></div>
+      <div class="sum-row"><span class="sum-label">Duration · Muda</span><span class="sum-val gold" id="sum-days">0 days</span></div>
+      <div class="sum-row"><span class="sum-label">Travelers · Wasafiri</span><span class="sum-val" id="sum-travelers">2 people</span></div>
+      <div class="sum-row"><span class="sum-label">Countries · Nchi</span><span class="sum-val" id="sum-countries">Tanzania 🇹🇿</span></div>
+      <div class="sum-row"><span class="sum-label">Parks planned</span><span class="sum-val gold" id="sum-parks">0 parks</span></div>
+      <div class="sum-row"><span class="sum-label">Activities</span><span class="sum-val" id="sum-acts">0 activities</span></div>
+
+      <div class="countries-progress" id="country-bars" style="display:none">
+        <div style="font-size:10px;font-weight:500;letter-spacing:1px;text-transform:uppercase;color:rgba(245,237,216,.35);margin-bottom:8px">Days per country</div>
+        <div class="cp-row" id="cp-ke" style="display:none">
+          <span class="cp-flag">🇰🇪</span>
+          <span class="cp-label">Kenya</span>
+          <div class="cp-bar"><div class="cp-fill" id="cp-ke-fill" style="width:0%;background:#00AA00"></div></div>
+          <span class="cp-count" id="cp-ke-count">0d</span>
+        </div>
+        <div class="cp-row" id="cp-ug" style="display:none">
+          <span class="cp-flag">🇺🇬</span>
+          <span class="cp-label">Uganda</span>
+          <div class="cp-bar"><div class="cp-fill" id="cp-ug-fill" style="width:0%;background:#E03050"></div></div>
+          <span class="cp-count" id="cp-ug-count">0d</span>
+        </div>
+        <div class="cp-row" id="cp-tz" style="display:none">
+          <span class="cp-flag">🇹🇿</span>
+          <span class="cp-label">Tanzania</span>
+          <div class="cp-bar"><div class="cp-fill" id="cp-tz-fill" style="width:0%;background:#1EB53A"></div></div>
+          <span class="cp-count" id="cp-tz-count">0d</span>
+        </div>
+      </div>
+
+      <div class="action-row" style="margin-top:14px">
+        <button class="action-btn" onclick="saveTrip()">💾 Save · Hifadhi</button>
+        <button class="action-btn" onclick="shareTrip()">📤 Share · Shiriki</button>
+        <button class="action-btn" onclick="printTrip()">🖨️ Print</button>
+      </div>
+    </div>
+
+    <!-- TIPS -->
+    <div class="tips-card">
+      <div class="tips-title">💡 Planning Tips · Vidokezo</div>
+      <div class="tip-item"><span class="tip-icon">🦍</span><span>Book Bwindi gorilla permits <strong>3–6 months</strong> ahead — only 96 per day · Ruhusa za gorilla zinahitajika mapema</span></div>
+      <div class="tip-item"><span class="tip-icon">🌧️</span><span>Avoid Apr–May (long rains) and Nov (short rains) for best game viewing · Epuka msimu wa mvua</span></div>
+      <div class="tip-item"><span class="tip-icon">🌅</span><span>Schedule game drives at <strong>6am & 4pm</strong> — animals most active at dawn and dusk · Asubuhi na jioni ni wakati mzuri</span></div>
+      <div class="tip-item"><span class="tip-icon">✈️</span><span>Bush flights between parks save 2–3 days of driving · Ndege ndogo hupunguza safari ya barabara</span></div>
+    </div>
+
+    <!-- QUICK ADD TEMPLATES -->
+    <div class="summary-card">
+      <div class="summary-title" style="margin-bottom:10px">⚡ Quick Templates · Mifano</div>
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <button class="btn-gold" onclick="loadTemplate('classic')" style="text-align:left">🦁 Classic Kenya 5 Days</button>
+        <button class="btn-gold" onclick="loadTemplate('gorilla')" style="text-align:left">🦍 Uganda Gorillas 4 Days</button>
+        <button class="btn-gold" onclick="loadTemplate('tanzania')" style="text-align:left">🌅 Tanzania Circuit 7 Days</button>
+        <button class="btn-gold" onclick="loadTemplate('grand')" style="text-align:left">🌍 East Africa Grand 12 Days</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="background:#0F1205;padding:24px 40px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border-top:1px solid rgba(245,237,216,.05)">
+  <span style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(245,237,216,.35)">🦁 Safari Planner · safariplanner.co.tz</span>
+  <span style="font-size:12px;color:rgba(245,237,216,.2)">Built in Tanzania 🇹🇿 by Daniel · © 2026</span>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const PARKS_BY_COUNTRY = {
+  ke: [
+    { id:'masai-mara', name:'Masai Mara', icon:'🦁' },
+    { id:'amboseli', name:'Amboseli', icon:'🐘' },
+    { id:'samburu', name:'Samburu NR', icon:'🦒' },
+    { id:'nakuru', name:'Lake Nakuru', icon:'🦩' },
+    { id:'tsavo', name:'Tsavo E & W', icon:'🐆' }
+  ],
+  ug: [
+    { id:'bwindi', name:'Bwindi Forest', icon:'🦍' },
+    { id:'kibale', name:'Kibale Forest', icon:'🐒' },
+    { id:'queen-eliz', name:'Queen Elizabeth', icon:'🦁' },
+    { id:'murchison', name:'Murchison Falls', icon:'💧' }
+  ],
+  tz: [
+    { id:'serengeti', name:'Serengeti', icon:'🌅' },
+    { id:'ngorongoro', name:'Ngorongoro', icon:'🦏' },
+    { id:'tarangire', name:'Tarangire', icon:'🐘' },
+    { id:'manyara', name:'Lake Manyara', icon:'🦩' }
+  ]
+};
+
+const ACTIVITY_PRESETS = {
+  'Game Drive': { icon:'🚙', color:'#2D5016' },
+  'Bush Walk': { icon:'🥾', color:'#4A7A2A' },
+  'Gorilla Trek': { icon:'🦍', color:'#B8192A' },
+  'Chimp Trek': { icon:'🐒', color:'#8B3520' },
+  'Boat Safari': { icon:'⛵', color:'#185FA5' },
+  'Bird Watch': { icon:'🦅', color:'#1EB53A' },
+  'Sundowner': { icon:'🌅', color:'#C8860A' },
+  'Lodge Check-in': { icon:'🏕️', color:'#5F4020' },
+  'Flight': { icon:'✈️', color:'#444' },
+  'Cultural Visit': { icon:'🎭', color:'#7B2D8B' },
+  'Bush Breakfast': { icon:'☕', color:'#8B6914' },
+  'Night Drive': { icon:'🌙', color:'#1A1A4A' }
+};
+
+const COUNTRY_COLORS = { ke: '#00AA00', ug: '#E03050', tz: '#1EB53A' };
+const COUNTRY_NAMES  = { ke: 'Kenya 🇰🇪', ug: 'Uganda 🇺🇬', tz: 'Tanzania 🇹🇿' };
+
+let trip = { name:'', start:'', end:'', travelers:2, budget:'mid', countries:['tz'], days:[] };
+let setupVisible = true;
+let dayCounter = 0;
+
+// ─── SETUP ──────────────────────────────────────────────────────────────────
+
+function toggleCountry(el, c) {
+  el.classList.toggle('on');
+  const idx = trip.countries.indexOf(c);
+  if (idx === -1) trip.countries.push(c);
+  else trip.countries.splice(idx, 1);
+  updateSummary();
+}
+
+function toggleSetup() {
+  setupVisible = !setupVisible;
+  document.getElementById('setup-body').style.display = setupVisible ? 'block' : 'none';
+  document.getElementById('setup-toggle').textContent = setupVisible ? 'Hide ↑' : 'Show ↓';
+}
+
+function startBuilding() {
+  const name = document.getElementById('trip-name').value.trim();
+  if (!name) {
+    showToast('Please enter a trip name · Tafadhali weka jina la safari');
+    document.getElementById('trip-name').focus();
+    return;
+  }
+  trip.name = name;
+  trip.start = document.getElementById('trip-start').value;
+  trip.end = document.getElementById('trip-end').value;
+  trip.travelers = parseInt(document.getElementById('trip-travelers').value);
+  trip.budget = document.getElementById('trip-budget').value;
+
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('days-panel').style.display = 'block';
+  toggleSetup();
+  updateSummary();
+  if (trip.days.length === 0) addDay();
+  showToast('Trip created! Now add your days · Safari imeundwa! Sasa ongeza siku 🎉');
+}
+
+// ─── DAYS ────────────────────────────────────────────────────────────────────
+
+function addDay(data) {
+  dayCounter++;
+  const dayNum = trip.days.length + 1;
+  const id = 'day-' + Date.now();
+
+  // Guess country from trip.countries
+  const c = trip.countries.length === 1 ? trip.countries[0] : (trip.countries[dayNum % trip.countries.length] || trip.countries[0]);
+
+  const dayObj = data || {
+    id, num: dayNum, label: 'Day ' + dayNum,
+    country: c, park: null, activities: [], notes: ''
+  };
+
+  if (!data) trip.days.push(dayObj);
+  renderDays();
+  updateSummary();
+  saveToStorage();
+
+  // Auto-scroll to new day
+  setTimeout(() => {
+    const el = document.getElementById(dayObj.id);
+    if (el) el.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  }, 100);
+}
+
+function renderDays() {
+  const list = document.getElementById('days-list');
+  list.innerHTML = trip.days.map((d, i) => buildDayHTML(d, i)).join('');
+
+  // Re-attach open states
+  trip.days.forEach(d => {
+    if (d.open) {
+      const body = document.getElementById('body-' + d.id);
+      const arr = document.getElementById('arr-' + d.id);
+      if (body) body.classList.add('open');
+      if (arr) arr.classList.add('open');
+    }
+  });
+}
+
+function buildDayHTML(d, i) {
+  const c = d.country || 'tz';
+  const color = COUNTRY_COLORS[c];
+  const allParks = [...(PARKS_BY_COUNTRY.ke||[]), ...(PARKS_BY_COUNTRY.ug||[]), ...(PARKS_BY_COUNTRY.tz||[])];
+  const selectedPark = allParks.find(p => p.id === d.park);
+
+  const parksByCountry = Object.entries(PARKS_BY_COUNTRY).map(([cc, parks]) => `
+    <div style="margin-bottom:6px">
+      <div style="font-size:9px;font-weight:700;color:rgba(245,237,216,.3);letter-spacing:1px;margin-bottom:4px">${COUNTRY_NAMES[cc]}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px">
+        ${parks.map(p => `
+          <div class="park-opt ${d.park===p.id?'selected':''}" onclick="selectPark('${d.id}','${p.id}')">
+            <span class="park-opt-flag">${p.icon}</span>${p.name}
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+
+  const actsHTML = d.activities.length > 0
+    ? `<div class="acts-list">${d.activities.map((a,ai) => `
+        <div class="act-item">
+          <span class="act-time">${a.time||'—'}</span>
+          <span class="act-icon">${a.icon||'📍'}</span>
+          <span class="act-name">${a.name}</span>
+          <span class="act-tag" style="background:${a.color||'#444'}">${a.type||'Activity'}</span>
+          <button class="act-del" onclick="removeActivity('${d.id}',${ai})">✕</button>
+        </div>
+      `).join('')}</div>`
+    : `<div style="font-size:12px;color:rgba(245,237,216,.3);padding:8px 0;font-style:italic">No activities yet · Bado hakuna shughuli — add your first one below</div>`;
+
+  const dateStr = d.date ? `<span style="font-size:10px;color:rgba(245,237,216,.35);margin-left:4px">${d.date}</span>` : '';
+
+  return `
+  <div class="day-card" id="${d.id}">
+    <div class="day-hdr" onclick="toggleDay('${d.id}')">
+      <div class="day-num-badge" style="background:${color}">${d.num}</div>
+      <div class="day-hdr-text">
+        <div class="day-hdr-title">Day ${d.num}${dateStr} — ${selectedPark ? selectedPark.icon + ' ' + selectedPark.name : 'No park selected yet · Chagua mbuga'}</div>
+        <div class="day-hdr-sub">${COUNTRY_NAMES[c]} · ${d.activities.length} activities · shughuli ${d.activities.length}</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center">
+        <button class="btn-ghost" style="font-size:10px;padding:4px 8px" onclick="event.stopPropagation();removeDay('${d.id}')">Remove</button>
+        <span class="day-toggle ${d.open?'open':''}" id="arr-${d.id}">▶</span>
+      </div>
+    </div>
+    <div class="day-body ${d.open?'open':''}" id="body-${d.id}">
+
+      <div style="display:flex;gap:10px;margin-bottom:14px">
+        <div style="flex:1">
+          <div class="park-selector-label">Country for this day · Nchi</div>
+          <div style="display:flex;gap:6px">
+            ${['ke','ug','tz'].map(cc => `
+              <div class="cpick ${cc} ${d.country===cc?'on':''}" onclick="setDayCountry('${d.id}','${cc}')" style="padding:5px 10px;font-size:11px">
+                ${{ke:'🇰🇪 Kenya',ug:'🇺🇬 Uganda',tz:'🇹🇿 Tanzania'}[cc]}
+              </div>
+            `).join('')}
+          </div>
+        </div>
+        <div style="flex:0 0 120px">
+          <div class="park-selector-label">Date · Tarehe</div>
+          <input type="date" class="form-input" style="font-size:11px;padding:6px 10px" value="${d.date||''}" onchange="setDayDate('${d.id}',this.value)">
+        </div>
+      </div>
+
+      <div class="park-selector">
+        <div class="park-selector-label">Select Park · Chagua Mbuga</div>
+        <div>${parksByCountry}</div>
+      </div>
+
+      <div style="font-size:11px;font-weight:500;letter-spacing:.5px;text-transform:uppercase;color:rgba(245,237,216,.4);margin-bottom:7px">
+        Activities · Shughuli
+      </div>
+      ${actsHTML}
+
+      <div class="add-act-row" style="margin-top:8px">
+        <input class="add-act-input" id="act-input-${d.id}" type="text" placeholder="Activity name · Jina la shughuli" onkeydown="if(event.key==='Enter') addActivity('${d.id}')">
+        <input class="add-act-input" id="act-time-${d.id}" type="time" style="flex:0 0 90px" value="06:00">
+        <select class="add-act-select" id="act-type-${d.id}">
+          ${Object.keys(ACTIVITY_PRESETS).map(k => `<option value="${k}">${ACTIVITY_PRESETS[k].icon} ${k}</option>`).join('')}
+        </select>
+        <button class="btn-gold" onclick="addActivity('${d.id}')">+ Add</button>
+      </div>
+
+      <textarea class="day-notes" id="notes-${d.id}" placeholder="Notes · Maelezo ya ziada (optional — optional)" oninput="saveDayNotes('${d.id}',this.value)">${d.notes||''}</textarea>
+    </div>
+  </div>`;
+}
+
+function toggleDay(id) {
+  const day = trip.days.find(d => d.id === id);
+  if (!day) return;
+  day.open = !day.open;
+  const body = document.getElementById('body-' + id);
+  const arr = document.getElementById('arr-' + id);
+  if (body) body.classList.toggle('open', day.open);
+  if (arr) arr.classList.toggle('open', day.open);
+}
+
+function selectPark(dayId, parkId) {
+  const day = trip.days.find(d => d.id === dayId);
+  if (day) { day.park = parkId; renderDays(); updateSummary(); saveToStorage(); }
+}
+
+function setDayCountry(dayId, c) {
+  const day = trip.days.find(d => d.id === dayId);
+  if (day) { day.country = c; day.open = true; renderDays(); updateSummary(); saveToStorage(); }
+}
+
+function setDayDate(dayId, val) {
+  const day = trip.days.find(d => d.id === dayId);
+  if (day) { day.date = val; updateSummary(); saveToStorage(); }
+}
+
+function saveDayNotes(dayId, val) {
+  const day = trip.days.find(d => d.id === dayId);
+  if (day) { day.notes = val; saveToStorage(); }
+}
+
+function removeDay(id) {
+  if (!confirm('Remove this day? · Futa siku hii?')) return;
+  trip.days = trip.days.filter(d => d.id !== id);
+  trip.days.forEach((d, i) => d.num = i + 1);
+  renderDays(); updateSummary(); saveToStorage();
+}
+
+function addActivity(dayId) {
+  const nameEl = document.getElementById('act-input-' + dayId);
+  const timeEl = document.getElementById('act-time-' + dayId);
+  const typeEl = document.getElementById('act-type-' + dayId);
+  if (!nameEl) return;
+  const name = nameEl.value.trim();
+  if (!name) { showToast('Enter activity name · Weka jina la shughuli'); return; }
+  const type = typeEl.value;
+  const preset = ACTIVITY_PRESETS[type] || { icon:'📍', color:'#444' };
+  const day = trip.days.find(d => d.id === dayId);
+  if (day) {
+    day.activities.push({ name, time: timeEl.value, type, icon: preset.icon, color: preset.color });
+    nameEl.value = '';
+    renderDays();
+    // Reopen this day
+    const d2 = trip.days.find(d => d.id === dayId);
+    if (d2) d2.open = true;
+    renderDays();
+    updateSummary(); saveToStorage();
+    showToast('Activity added · Shughuli imeongezwa ✓');
+  }
+}
+
+function removeActivity(dayId, idx) {
+  const day = trip.days.find(d => d.id === dayId);
+  if (day) {
+    day.activities.splice(idx, 1);
+    day.open = true;
+    renderDays(); updateSummary(); saveToStorage();
+  }
+}
+
+// ─── SUMMARY ────────────────────────────────────────────────────────────────
+
+function updateSummary() {
+  const name = document.getElementById('trip-name').value.trim() || trip.name || '—';
+  const start = document.getElementById('trip-start')?.value || trip.start;
+  const end = document.getElementById('trip-end')?.value || trip.end;
+  const travelers = document.getElementById('trip-travelers')?.value || trip.travelers;
+
+  document.getElementById('sum-name').textContent = name.length > 20 ? name.slice(0,20)+'…' : name || '—';
+  document.getElementById('sum-travelers').textContent = travelers + ' people · watu';
+
+  // Duration
+  if (start && end) {
+    const d1 = new Date(start), d2 = new Date(end);
+    const diff = Math.round((d2 - d1) / 86400000);
+    document.getElementById('sum-days').textContent = diff > 0 ? diff + ' days · siku' : '—';
+  } else {
+    document.getElementById('sum-days').textContent = trip.days.length + ' days · siku';
+  }
+
+  // Countries
+  const activeCpicks = [...document.querySelectorAll('.cpick.on')].map(el => {
+    if (el.classList.contains('ke')) return 'Kenya 🇰🇪';
+    if (el.classList.contains('ug')) return 'Uganda 🇺🇬';
+    return 'Tanzania 🇹🇿';
+  });
+  document.getElementById('sum-countries').textContent = activeCpicks.join(', ') || '—';
+
+  // Parks & activities
+  const parksUsed = new Set(trip.days.map(d => d.park).filter(Boolean));
+  const totalActs = trip.days.reduce((sum, d) => sum + d.activities.length, 0);
+  document.getElementById('sum-parks').textContent = parksUsed.size + ' parks · mbuga';
+  document.getElementById('sum-acts').textContent = totalActs + ' activities · shughuli';
+
+  // Country bars
+  if (trip.days.length > 0) {
+    document.getElementById('country-bars').style.display = 'block';
+    ['ke','ug','tz'].forEach(c => {
+      const count = trip.days.filter(d => d.country === c).length;
+      const row = document.getElementById('cp-' + c);
+      if (row) row.style.display = count > 0 ? 'flex' : 'none';
+      const fill = document.getElementById('cp-' + c + '-fill');
+      if (fill) fill.style.width = Math.round(count / trip.days.length * 100) + '%';
+      const cnt = document.getElementById('cp-' + c + '-count');
+      if (cnt) cnt.textContent = count + 'd';
+    });
+  }
+}
+
+// ─── TEMPLATES ──────────────────────────────────────────────────────────────
+
+const TEMPLATES = {
+  classic: {
+    name: 'Classic Kenya Safari', countries: ['ke'], travelers: 2, budget: 'mid',
+    days: [
+      { country:'ke', park:'masai-mara', activities:[{name:'Arrive Nairobi, transfer to Mara',type:'Flight',icon:'✈️',color:'#444',time:'09:00'},{name:'Evening game drive',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'16:30'}], notes:'First day — arrive and settle in' },
+      { country:'ke', park:'masai-mara', activities:[{name:'Dawn game drive — big cat territory',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Bush breakfast at hippo pool',type:'Bush Breakfast',icon:'☕',color:'#8B6914',time:'09:00'},{name:'Mara River crossing watch',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'16:00'}], notes:'Best chance for wildebeest crossing' },
+      { country:'ke', park:'masai-mara', activities:[{name:'Full-day game drive with picnic',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Sundowner on the plains',type:'Sundowner',icon:'🌅',color:'#C8860A',time:'18:00'}], notes:'' },
+      { country:'ke', park:'amboseli', activities:[{name:'Transfer to Amboseli',type:'Flight',icon:'✈️',color:'#444',time:'08:00'},{name:'Afternoon drive — Kilimanjaro views',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'16:00'}], notes:'Clear mornings best for Kilimanjaro views' },
+      { country:'ke', park:'amboseli', activities:[{name:'Dawn drive — elephant herds',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Bush walk with Masai guide',type:'Bush Walk',icon:'🥾',color:'#4A7A2A',time:'10:00'},{name:'Fly back to Nairobi',type:'Flight',icon:'✈️',color:'#444',time:'15:00'}], notes:'Largest elephant herds in Kenya' },
+    ]
+  },
+  gorilla: {
+    name: 'Uganda Gorilla & Chimp Trek', countries: ['ug'], travelers: 2, budget: 'luxury',
+    days: [
+      { country:'ug', park:'kibale', activities:[{name:'Fly Entebbe → Kasese',type:'Flight',icon:'✈️',color:'#444',time:'09:00'},{name:'Chimp trekking — Kibale Forest',type:'Chimp Trek',icon:'🐒',color:'#8B3520',time:'14:00'}], notes:'Kibale has highest chimp density in Africa' },
+      { country:'ug', park:'kibale', activities:[{name:'Full-day chimp tracking',type:'Chimp Trek',icon:'🐒',color:'#8B3520',time:'07:00'},{name:'Bigodi Wetlands bird walk',type:'Bird Watch',icon:'🦅',color:'#1EB53A',time:'16:00'}], notes:'' },
+      { country:'ug', park:'bwindi', activities:[{name:'Drive to Bwindi Impenetrable Forest',type:'Lodge Check-in',icon:'🏕️',color:'#5F4020',time:'08:00'},{name:'Briefing at UWA park HQ',type:'Cultural Visit',icon:'🎭',color:'#7B2D8B',time:'16:00'}], notes:'Permits must be collected day before' },
+      { country:'ug', park:'bwindi', activities:[{name:'Mountain gorilla trekking — full day',type:'Gorilla Trek',icon:'🦍',color:'#B8192A',time:'07:00'},{name:'Sundowner — celebrate the encounter',type:'Sundowner',icon:'🌅',color:'#C8860A',time:'18:00'}], notes:'PERMIT DAY — the most unforgettable experience of your life' },
+    ]
+  },
+  tanzania: {
+    name: 'Tanzania Northern Circuit', countries: ['tz'], travelers: 2, budget: 'mid',
+    days: [
+      { country:'tz', park:'tarangire', activities:[{name:'Arrive Kilimanjaro Intl Airport',type:'Flight',icon:'✈️',color:'#444',time:'10:00'},{name:'Tarangire afternoon game drive',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'15:00'}], notes:'Tarangire: baobabs & large elephant herds' },
+      { country:'tz', park:'tarangire', activities:[{name:'Full day Tarangire — elephants & lions',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Night drive (if lodge permits)',type:'Night Drive',icon:'🌙',color:'#1A1A4A',time:'19:00'}], notes:'' },
+      { country:'tz', park:'manyara', activities:[{name:'Lake Manyara — tree-climbing lions',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Flamingos at the soda lake',type:'Bird Watch',icon:'🦅',color:'#1EB53A',time:'10:00'}], notes:'Lake Manyara is compact but superb' },
+      { country:'tz', park:'ngorongoro', activities:[{name:'Ngorongoro Crater rim arrival',type:'Lodge Check-in',icon:'🏕️',color:'#5F4020',time:'12:00'},{name:'Crater floor game drive — Big Five',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'15:00'}], notes:'Stay on the rim — views are extraordinary' },
+      { country:'tz', park:'ngorongoro', activities:[{name:'Full day crater — black rhino search',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:30'},{name:'Masai cultural village visit',type:'Cultural Visit',icon:'🎭',color:'#7B2D8B',time:'16:00'}], notes:'Best rhino sightings: early morning' },
+      { country:'tz', park:'serengeti', activities:[{name:'Enter Serengeti via Naabi Hill gate',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'08:00'},{name:'Central Serengeti plains drive',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'15:00'}], notes:'Seronera area: year-round predator activity' },
+      { country:'tz', park:'serengeti', activities:[{name:'North Serengeti — migration if Jul-Oct',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Balloon safari over the plains',type:'Sundowner',icon:'🌅',color:'#C8860A',time:'05:30'},{name:'Fly back to Kilimanjaro Airport',type:'Flight',icon:'✈️',color:'#444',time:'14:00'}], notes:'Book balloon 3 months in advance' },
+    ]
+  },
+  grand: {
+    name: 'East Africa Grand Circuit', countries: ['ke','tz','ug'], travelers: 2, budget: 'mid',
+    days: [
+      { country:'ke', park:'masai-mara', activities:[{name:'Arrive Nairobi JKIA',type:'Flight',icon:'✈️',color:'#444',time:'09:00'},{name:'Transfer to Masai Mara',type:'Flight',icon:'✈️',color:'#444',time:'13:00'},{name:'Sunset game drive',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'17:00'}], notes:'' },
+      { country:'ke', park:'masai-mara', activities:[{name:'Dawn drive — predator hour',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Mara River crossing watch',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'16:00'}], notes:'Peak migration: July-October' },
+      { country:'ke', park:'amboseli', activities:[{name:'Fly Mara → Amboseli',type:'Flight',icon:'✈️',color:'#444',time:'08:00'},{name:'Afternoon drive — Kilimanjaro backdrop',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'16:00'}], notes:'' },
+      { country:'tz', park:'serengeti', activities:[{name:'Fly Amboseli → Kilimanjaro → Serengeti',type:'Flight',icon:'✈️',color:'#444',time:'08:00'},{name:'Serengeti plains game drive',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'15:00'}], notes:'' },
+      { country:'tz', park:'serengeti', activities:[{name:'Full day Serengeti — Central & North',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Bush sundowner',type:'Sundowner',icon:'🌅',color:'#C8860A',time:'18:00'}], notes:'' },
+      { country:'tz', park:'ngorongoro', activities:[{name:'Drive to Ngorongoro',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'08:00'},{name:'Crater floor — Big Five drive',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'14:00'}], notes:'World\'s largest intact caldera' },
+      { country:'tz', park:'tarangire', activities:[{name:'Tarangire — elephant paradise',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'07:00'},{name:'Fly Kilimanjaro → Entebbe',type:'Flight',icon:'✈️',color:'#444',time:'16:00'}], notes:'' },
+      { country:'ug', park:'kibale', activities:[{name:'Drive to Kibale Forest',type:'Lodge Check-in',icon:'🏕️',color:'#5F4020',time:'09:00'},{name:'Afternoon chimp tracking',type:'Chimp Trek',icon:'🐒',color:'#8B3520',time:'14:00'}], notes:'' },
+      { country:'ug', park:'bwindi', activities:[{name:'Drive to Bwindi — collect permits',type:'Lodge Check-in',icon:'🏕️',color:'#5F4020',time:'08:00'}], notes:'IMPORTANT: Confirm gorilla permits before arrival' },
+      { country:'ug', park:'bwindi', activities:[{name:'GORILLA TREKKING — Bwindi',type:'Gorilla Trek',icon:'🦍',color:'#B8192A',time:'07:00'},{name:'Celebratory sundowner',type:'Sundowner',icon:'🌅',color:'#C8860A',time:'18:00'}], notes:'The most unforgettable day of the trip 🦍' },
+      { country:'ug', park:'queen-eliz', activities:[{name:'Queen Elizabeth — tree-climbing lions',type:'Game Drive',icon:'🚙',color:'#2D5016',time:'06:00'},{name:'Kazinga Channel boat safari',type:'Boat Safari',icon:'⛵',color:'#185FA5',time:'15:00'}], notes:'Best hippo & croc sightings on the channel' },
+      { country:'ug', park:'murchison', activities:[{name:'Murchison Falls — Nile boat safari',type:'Boat Safari',icon:'⛵',color:'#185FA5',time:'08:00'},{name:'Fly Kampala → Home',type:'Flight',icon:'✈️',color:'#444',time:'15:00'}], notes:'End of an incredible journey 🌍' },
+    ]
+  }
+};
+
+function loadTemplate(key) {
+  const t = TEMPLATES[key];
+  if (!t) return;
+  if (trip.days.length > 0 && !confirm('Load template? This will replace your current trip · Pakia mfano? Hii itabadilisha safari yako ya sasa')) return;
+
+  trip = { name: t.name, start:'', end:'', travelers: t.travelers, budget: t.budget, countries: t.countries, days: [] };
+
+  document.getElementById('trip-name').value = t.name;
+  document.getElementById('trip-travelers').value = t.travelers;
+  document.getElementById('trip-budget').value = t.budget;
+
+  // Set country pills
+  document.querySelectorAll('.cpick').forEach(el => {
+    const c = el.classList.contains('ke') ? 'ke' : el.classList.contains('ug') ? 'ug' : 'tz';
+    el.classList.toggle('on', t.countries.includes(c));
+  });
+
+  t.days.forEach((d, i) => {
+    const id = 'day-' + Date.now() + i;
+    trip.days.push({
+      id, num: i+1, label: 'Day ' + (i+1),
+      country: d.country, park: d.park,
+      activities: d.activities || [], notes: d.notes || '',
+      open: false
+    });
+  });
+
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('days-panel').style.display = 'block';
+
+  const panelSub = document.getElementById('days-panel-sub');
+  if (panelSub) panelSub.textContent = t.days.length + ' days loaded · siku ' + t.days.length + ' zimepakiwa';
+
+  renderDays(); updateSummary(); saveToStorage();
+  showToast('Template loaded: ' + t.name + ' · Mfano umepakiwa 🎉');
+}
+
+// ─── PERSIST ────────────────────────────────────────────────────────────────
+
+function saveToStorage() {
+  try { localStorage.setItem('sp_trip', JSON.stringify(trip)); } catch(e) {}
+}
+
+function loadFromStorage() {
+  try {
+    const raw = localStorage.getItem('sp_trip');
+    if (!raw) return;
+    const saved = JSON.parse(raw);
+    if (!saved.name) return;
+    trip = saved;
+    document.getElementById('trip-name').value = trip.name || '';
+    document.getElementById('trip-start').value = trip.start || '';
+    document.getElementById('trip-end').value = trip.end || '';
+    document.getElementById('trip-travelers').value = trip.travelers || 2;
+    document.getElementById('trip-budget').value = trip.budget || 'mid';
+    document.querySelectorAll('.cpick').forEach(el => {
+      const c = el.classList.contains('ke') ? 'ke' : el.classList.contains('ug') ? 'ug' : 'tz';
+      el.classList.toggle('on', (trip.countries || ['tz']).includes(c));
+    });
+    if (trip.days && trip.days.length > 0) {
+      document.getElementById('empty-state').style.display = 'none';
+      document.getElementById('days-panel').style.display = 'block';
+      renderDays(); updateSummary();
+      showToast('Saved trip loaded · Safari iliyohifadhiwa imepakiwa ✓');
+    }
+  } catch(e) {}
+}
+
+// ─── ACTIONS ────────────────────────────────────────────────────────────────
+
+function clearTrip() {
+  if (!confirm('Start a new trip? · Anza safari mpya?')) return;
+  trip = { name:'', start:'', end:'', travelers:2, budget:'mid', countries:['tz'], days:[] };
+  trip.days = [];
+  document.getElementById('trip-name').value = '';
+  document.getElementById('trip-start').value = '';
+  document.getElementById('trip-end').value = '';
+  document.getElementById('days-panel').style.display = 'none';
+  document.getElementById('empty-state').style.display = 'block';
+  document.getElementById('days-list').innerHTML = '';
+  if (!setupVisible) toggleSetup();
+  saveToStorage(); updateSummary();
+}
+
+function saveTrip() { saveToStorage(); showToast('Saved! · Imehifadhiwa! ✓ (auto-saves to your browser)'); }
+
+function shareTrip() {
+  const text = buildShareText();
+  if (navigator.share) {
+    navigator.share({ title: trip.name || 'My Safari Plan', text, url: window.location.href });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+    showToast('Trip copied to clipboard · Imenakiliwa kwenye clipboard ✓');
+  }
+}
+
+function buildShareText() {
+  let txt = `🦁 ${trip.name || 'My Safari Plan'}\n`;
+  txt += `📅 ${trip.days.length} days · ${trip.travelers} travelers\n\n`;
+  trip.days.forEach(d => {
+    const allP = Object.values(PARKS_BY_COUNTRY).flat();
+    const p = allP.find(x => x.id === d.park);
+    txt += `Day ${d.num}: ${COUNTRY_NAMES[d.country]} — ${p ? p.icon + p.name : 'TBD'}\n`;
+    d.activities.forEach(a => txt += `  ${a.time||''} ${a.icon} ${a.name}\n`);
+  });
+  txt += `\nPlan yours at safariplanner.co.tz`;
+  return txt;
+}
+
+function printTrip() { window.print(); }
+
+// ─── TOAST ──────────────────────────────────────────────────────────────────
+
+let toastTimeout;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimeout);
+  toastTimeout = setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadFromStorage();
+  updateSummary();
+});
+</script>
+</body>
+</html>
