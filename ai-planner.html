@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Safari Planner — Safari Planner</title>
+  <meta name="description" content="Tell us your dream safari. Our AI builds a personalised East Africa itinerary instantly.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦁</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--forest:#1E3A0A;--green:#2D5016;--gold:#C8860A;--amber:#E8A84B;--sand:#F5EDD8;--dusk:#2C1A0A;--card:rgba(245,237,216,.04);--border:rgba(245,237,216,.09);--muted:rgba(245,237,216,.5);--hint:rgba(245,237,216,.28)}
+    html{scroll-behavior:smooth}
+    body{background:var(--dusk);color:var(--sand);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh;line-height:1.6}
+    nav{background:rgba(30,58,10,.97);padding:0 48px;display:flex;justify-content:space-between;align-items:center;height:62px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;backdrop-filter:blur(10px)}
+    .nav-brand{display:flex;align-items:center;gap:9px;text-decoration:none}
+    .nav-logo{font-family:'Playfair Display',serif;font-size:17px;color:var(--sand);letter-spacing:.3px}
+    .nav-links{display:flex;align-items:center;gap:2px}
+    .nav-link{color:var(--muted);text-decoration:none;font-size:12px;font-weight:400;padding:7px 11px;border-radius:8px;transition:all .2s}
+    .nav-link:hover{color:var(--sand);background:rgba(255,255,255,.06)}
+    .nav-link.active{color:var(--amber);background:rgba(200,134,10,.1)}
+    .nav-cta{background:var(--gold);color:#fff;padding:8px 16px;border-radius:9px;font-size:12px;font-weight:600;text-decoration:none;transition:all .2s}
+    .nav-cta:hover{background:var(--amber)}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none}
+    .hamburger span{width:22px;height:1.5px;background:var(--sand);border-radius:2px;transition:all .3s;display:block}
+    .hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+    .mmenu{position:fixed;top:62px;left:0;right:0;background:rgba(18,36,6,.98);border-bottom:1px solid var(--border);padding:12px 16px 20px;z-index:199;display:none;flex-direction:column;gap:2px}
+    .mmenu.open{display:flex}
+    .mml{color:rgba(245,237,216,.7);text-decoration:none;font-size:14px;padding:11px 14px;border-radius:10px;transition:all .2s;display:flex;align-items:center;gap:10px}
+    .mml:hover{color:var(--sand);background:rgba(245,237,216,.06)}
+    .mmcta{background:rgba(200,134,10,.12);color:var(--amber);font-weight:600;margin-top:6px}
+    .hero{background:var(--green);padding:56px 48px 48px;position:relative;overflow:hidden;text-align:center}
+    .hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(200,134,10,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(200,134,10,.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none}
+    .hi{max-width:620px;margin:0 auto;position:relative;z-index:1}
+    .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,134,10,.12);border:1px solid rgba(200,134,10,.25);border-radius:100px;padding:6px 18px;font-size:11px;font-weight:500;color:var(--amber);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:20px}
+    .bdot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+    .htitle{font-family:'Playfair Display',serif;font-size:clamp(28px,5vw,50px);font-weight:900;color:var(--sand);line-height:1.08;margin-bottom:14px}
+    .htitle em{font-style:italic;color:var(--amber)}
+    .hsub{font-size:clamp(14px,2vw,16px);color:var(--muted);line-height:1.7;max-width:460px;margin:0 auto}
+    .main{max-width:760px;margin:0 auto;padding:40px 48px 80px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;margin-bottom:20px}
+    .chdr{padding:18px 24px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.12);display:flex;align-items:center;gap:12px}
+    .chdr-ic{font-size:20px;line-height:1}
+    .chdr-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--sand)}
+    .chdr-sub{font-size:11px;color:var(--hint);margin-top:1px}
+    .cbody{padding:24px}
+    .fl{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--hint);margin-bottom:6px;display:block}
+    .fi{width:100%;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:10px;padding:11px 15px;color:var(--sand);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;outline:none;transition:all .2s;appearance:none}
+    .fi:focus{border-color:rgba(200,134,10,.45);background:rgba(0,0,0,.3)}
+    .fi option{background:#1a2d0a;color:var(--sand)}
+    textarea.fi{resize:vertical;min-height:90px;line-height:1.65}
+    .fgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:18px}
+    .fg-full{grid-column:1/-1}
+    .clabel{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--hint);margin-bottom:9px}
+    .chips{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+    .chip{padding:7px 14px;border-radius:100px;border:1.5px solid var(--border);background:rgba(0,0,0,.15);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--muted);transition:all .18s;user-select:none}
+    .chip:hover{border-color:rgba(245,237,216,.2);color:var(--sand)}
+    .chip.on{background:rgba(200,134,10,.1);border-color:rgba(200,134,10,.4);color:var(--amber);font-weight:500}
+    .ctrow{display:flex;gap:8px;flex-wrap:wrap}
+    .ct{display:flex;align-items:center;gap:7px;padding:9px 16px;border-radius:100px;border:1.5px solid var(--border);background:rgba(0,0,0,.15);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;color:var(--muted);transition:all .18s;user-select:none}
+    .ct.ke.on{background:rgba(0,102,0,.18);border-color:#00AA00;color:#7EE47E}
+    .ct.ug.on{background:rgba(184,25,42,.18);border-color:#E03050;color:#F09090}
+    .ct.tz.on{background:rgba(30,181,58,.18);border-color:#1EB53A;color:#7EE494}
+    .gbtn{width:100%;background:var(--gold);border:none;border-radius:12px;padding:16px 28px;color:#fff;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;letter-spacing:.2px;margin-top:6px}
+    .gbtn:hover{background:var(--amber);transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,134,10,.25)}
+    .gbtn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+    .egrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+    .ecard{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px;cursor:pointer;transition:all .22s}
+    .ecard:hover{border-color:rgba(200,134,10,.3);background:rgba(200,134,10,.05);transform:translateY(-2px)}
+    .eic{font-size:22px;line-height:1;margin-bottom:10px;display:block}
+    .et{font-size:13px;font-weight:600;color:var(--sand);margin-bottom:5px}
+    .es{font-size:11px;color:var(--hint);line-height:1.55}
+    .loading{display:none;text-align:center;padding:56px 24px}
+    .loading.show{display:block}
+    .lani{font-size:52px;animation:bounce 1s ease-in-out infinite;display:block;margin-bottom:18px}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .ltitle{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--sand);margin-bottom:6px}
+    .lsub{font-size:13px;color:var(--muted);margin-bottom:20px}
+    .dots span{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin:0 4px;animation:dot 1.4s ease-in-out infinite}
+    .dots span:nth-child(2){animation-delay:.2s}.dots span:nth-child(3){animation-delay:.4s}
+    @keyframes dot{0%,80%,100%{transform:scale(0);opacity:.3}40%{transform:scale(1);opacity:1}}
+    .result{display:none}
+    .result.show{display:block;animation:fadeIn .4s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .rhdr{background:var(--forest);border:1px solid var(--border);border-radius:18px;padding:22px 26px;margin-bottom:18px}
+    .rtitle{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;color:var(--sand);margin-bottom:10px}
+    .rchips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .rc{font-size:11px;font-weight:600;padding:4px 12px;border-radius:100px;background:rgba(200,134,10,.1);border:1px solid rgba(200,134,10,.2);color:var(--amber)}
+    .racts{display:flex;gap:8px;flex-wrap:wrap}
+    .rbtn{background:rgba(245,237,216,.06);border:1px solid var(--border);border-radius:9px;padding:8px 16px;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+    .rbtn:hover{background:rgba(245,237,216,.1);color:var(--sand)}
+    .rbtn.p{background:var(--gold);border-color:var(--gold);color:#fff}
+    .rbtn.p:hover{background:var(--amber)}
+    .ibody{background:rgba(0,0,0,.18);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:18px;font-size:14px;color:rgba(245,237,216,.82);line-height:1.8}
+    .ibody h2{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--amber);margin:24px 0 10px;padding-bottom:8px;border-bottom:1px solid rgba(200,134,10,.15)}
+    .ibody h2:first-child{margin-top:0}
+    .ibody h3{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;color:var(--sand);margin:16px 0 6px}
+    .ibody strong{color:var(--sand);font-weight:500}.ibody em{color:var(--amber);font-style:italic}
+    .ibody ul{padding-left:18px;margin:8px 0}.ibody li{margin-bottom:5px;color:var(--muted)}
+    .chatcard{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:18px}
+    .chatc-hdr{padding:16px 22px;border-bottom:1px solid var(--border);background:rgba(0,0,0,.12);display:flex;align-items:center;gap:10px}
+    .chatc-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--sand)}
+    .fqs{display:flex;flex-wrap:wrap;gap:7px;padding:14px 20px;border-bottom:1px solid var(--border)}
+    .fq{padding:6px 13px;border-radius:100px;border:1px solid var(--border);background:rgba(0,0,0,.12);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;color:var(--muted);transition:all .18s}
+    .fq:hover{border-color:rgba(200,134,10,.3);color:var(--amber);background:rgba(200,134,10,.06)}
+    .cmsgs{padding:16px 20px;display:flex;flex-direction:column;gap:12px;max-height:360px;overflow-y:auto}
+    .cmsgs::-webkit-scrollbar{width:3px}
+    .cmsgs::-webkit-scrollbar-thumb{background:rgba(200,134,10,.3);border-radius:2px}
+    .msg{display:flex;gap:10px;align-items:flex-start}
+    .msg.u{flex-direction:row-reverse}
+    .mav{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:rgba(245,237,216,.07);border:1px solid var(--border)}
+    .msg.u .mav{background:rgba(200,134,10,.15);border-color:rgba(200,134,10,.2)}
+    .mbub{max-width:82%;padding:10px 15px;border-radius:13px;font-size:13px;line-height:1.65}
+    .msg.ai .mbub{background:rgba(245,237,216,.05);border:1px solid var(--border);color:rgba(245,237,216,.82)}
+    .msg.u .mbub{background:rgba(200,134,10,.12);border:1px solid rgba(200,134,10,.18);color:var(--sand)}
+    .cinrow{display:flex;gap:9px;padding:14px 20px;border-top:1px solid var(--border);background:rgba(0,0,0,.1)}
+    .cinp{flex:1;background:rgba(0,0,0,.22);border:1px solid var(--border);border-radius:10px;padding:10px 15px;color:var(--sand);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s}
+    .cinp:focus{border-color:rgba(200,134,10,.4)}
+    .cinp::placeholder{color:var(--hint)}
+    .sbtn{background:var(--gold);border:none;border-radius:10px;padding:10px 20px;color:#fff;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .sbtn:hover{background:var(--amber)}
+    .sbtn:disabled{opacity:.4;cursor:not-allowed}
+    .errbox{background:rgba(184,25,42,.08);border:1px solid rgba(184,25,42,.25);border-radius:12px;padding:14px 18px;margin-bottom:16px;display:none}
+    .errbox.show{display:block}
+    .errtitle{font-size:13px;font-weight:600;color:#F09090;margin-bottom:5px}
+    .errbody{font-size:12px;color:var(--muted);line-height:1.65}
+    .sbanner{border-radius:12px;padding:12px 18px;margin-bottom:20px;font-size:13px;display:flex;align-items:center;gap:10px}
+    .sbanner.ok{background:rgba(30,181,58,.08);border:1px solid rgba(30,181,58,.2);color:#7EE494;display:none}
+    .sbanner.warn{background:rgba(200,134,10,.08);border:1px solid rgba(200,134,10,.2);color:var(--amber)}
+    .toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--green);border:1px solid rgba(200,134,10,.25);border-radius:12px;padding:12px 28px;font-size:13px;font-weight:500;color:var(--sand);z-index:999;transition:transform .3s ease;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    .rstbar{text-align:center;padding:0 0 8px}
+    .rstlnk{font-size:12px;color:var(--muted);cursor:pointer;background:none;border:1px solid var(--border);font-family:'DM Sans',sans-serif;transition:all .2s;padding:8px 18px;border-radius:8px}
+    .rstlnk:hover{color:var(--sand);border-color:rgba(245,237,216,.2)}
+    .setup-box{background:rgba(200,134,10,.07);border:1.5px solid rgba(200,134,10,.2);border-radius:16px;padding:20px 24px;margin-bottom:22px}
+    .setup-title{font-size:13px;font-weight:600;color:var(--amber);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+    .setup-steps{font-size:12px;color:rgba(245,237,216,.65);line-height:1.9}
+    .setup-steps strong{color:var(--sand)}
+    @media(max-width:680px){
+      nav{padding:0 16px}.hamburger{display:flex}.nav-links{display:none}
+      .hero{padding:40px 20px 36px}.main{padding:24px 18px 60px}
+      .fgrid{grid-template-columns:1fr}.egrid{grid-template-columns:1fr}
+      .cbody{padding:18px}.ibody{padding:20px 18px}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html"><span style="font-size:20px;line-height:1">🦁</span><span class="nav-logo">Safari Planner</span></a>
+  <div class="nav-links">
+    <a class="nav-link" href="discover.html">🗺️ Discover</a>
+    <a class="nav-link" href="planner.html">📋 My Trip</a>
+    <a class="nav-link" href="wildlife.html">🦍 Wildlife</a>
+    <a class="nav-link" href="budget.html">💰 Budget</a>
+    <a class="nav-link active" href="#">🤖 AI Planner</a>
+    <a class="nav-cta" href="pitch.html">For Operators →</a>
+  </div>
+  <button class="hamburger" id="hbtn" onclick="toggleMenu()"><span></span><span></span><span></span></button>
+</nav>
+<div class="mmenu" id="mmenu">
+  <a class="mml" href="discover.html" onclick="closeMenu()"><span style="font-size:18px">🗺️</span>Discover Parks</a>
+  <a class="mml" href="planner.html" onclick="closeMenu()"><span style="font-size:18px">📋</span>My Trip · Safari Yangu</a>
+  <a class="mml" href="wildlife.html" onclick="closeMenu()"><span style="font-size:18px">🦍</span>Wildlife · Wanyamapori</a>
+  <a class="mml" href="budget.html" onclick="closeMenu()"><span style="font-size:18px">💰</span>Budget · Bajeti</a>
+  <a class="mml mmcta" href="pitch.html" onclick="closeMenu()"><span style="font-size:18px">🤝</span>For Operators</a>
+</div>
+
+<div class="hero">
+  <div class="hi">
+    <div class="badge"><span class="bdot"></span>Powered by Claude AI · Akili Bandia</div>
+    <h1 class="htitle">Tell Us Your<br><em>Dream Safari</em></h1>
+    <p class="hsub">Describe what you want in your own words. We build you a complete, personalised East Africa itinerary instantly — free.</p>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="sbanner ok" id="s-ok"><span>✅</span><span>AI is ready · Akili Bandia iko tayari!</span></div>
+  <div class="sbanner warn" id="s-warn"><span>⚙️</span><span>One-time setup needed — see instructions below to activate the AI</span></div>
+
+  <div class="setup-box" id="setup-box">
+    <div class="setup-title">🔑 How to activate the AI — One-time Vercel setup</div>
+    <div class="setup-steps">
+      <strong>Step 1:</strong> Go to <strong>console.anthropic.com</strong> → Sign up free → API Keys → Create Key → copy it<br>
+      <strong>Step 2:</strong> Go to <strong>vercel.com</strong> → Your safariplanner project → Settings → Environment Variables<br>
+      <strong>Step 3:</strong> Add variable: Name = <strong>ANTHROPIC_API_KEY</strong> · Value = your key (starts with sk-ant...)<br>
+      <strong>Step 4:</strong> Click Save → Go to Deployments → click <strong>Redeploy</strong><br>
+      <strong>Done!</strong> The AI will work on your next visit · Imekamilika! AI itafanya kazi ziara yako inayofuata
+    </div>
+  </div>
+
+  <div id="ex-sec">
+    <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--hint);margin-bottom:12px">Try these examples · Jaribu mifano hii</div>
+    <div class="egrid">
+      <div class="ecard" onclick="useEx(this)"><span class="eic">🦍</span><div class="et">Gorillas + Migration</div><div class="es">"Mountain gorillas in Uganda and the Great Migration in Tanzania. 12 days, 2 people, mid-range."</div></div>
+      <div class="ecard" onclick="useEx(this)"><span class="eic">🦁</span><div class="et">First Safari — Big Five</div><div class="es">"First safari ever. Want Big Five in Kenya. 7 days, family of 4, budget around $5,000."</div></div>
+      <div class="ecard" onclick="useEx(this)"><span class="eic">📷</span><div class="et">Photography Safari</div><div class="es">"Wildlife photographer wanting best light for lions and cheetahs. Mara + Serengeti, 10 days, luxury."</div></div>
+      <div class="ecard" onclick="useEx(this)"><span class="eic">💰</span><div class="et">Budget Explorer</div><div class="es">"Maximum wildlife on minimum budget. Kenya and Tanzania, under $2,000, 14 days."</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="chdr"><span class="chdr-ic">🌍</span><div><div class="chdr-title">Describe Your Dream Safari</div><div class="chdr-sub">Eleza Safari Yako · More detail = better itinerary</div></div></div>
+    <div class="cbody">
+      <div class="clabel">Quick interests · Maslahi yako</div>
+      <div class="chips">
+        <div class="chip" onclick="this.classList.toggle('on')">🦍 Gorilla Trekking</div>
+        <div class="chip" onclick="this.classList.toggle('on')">🐒 Chimp Tracking</div>
+        <div class="chip" onclick="this.classList.toggle('on')">🌊 Great Migration</div>
+        <div class="chip" onclick="this.classList.toggle('on')">📷 Photography</div>
+        <div class="chip" onclick="this.classList.toggle('on')">🦁 Big Five</div>
+        <div class="chip" onclick="this.classList.toggle('on')">🎈 Balloon Safari</div>
+        <div class="chip" onclick="this.classList.toggle('on')">🏕️ Bush Camping</div>
+        <div class="chip" onclick="this.classList.toggle('on')">🎭 Cultural Visits</div>
+        <div class="chip" onclick="this.classList.toggle('on')">🦩 Bird Watching</div>
+        <div class="chip" onclick="this.classList.toggle('on')">⛵ Boat Safari</div>
+      </div>
+      <div class="fgrid">
+        <div><label class="fl">Travelers · Wasafiri</label>
+          <select class="fi" id="f-travelers">
+            <option value="1 person">1 person</option>
+            <option value="2 people" selected>2 people</option>
+            <option value="3 people">3 people</option>
+            <option value="a family of 4">Family of 4</option>
+            <option value="a group of 6+">Group of 6+</option>
+          </select></div>
+        <div><label class="fl">Duration · Muda</label>
+          <select class="fi" id="f-days">
+            <option value="5 days">5 days</option>
+            <option value="7 days">7 days</option>
+            <option value="10 days" selected>10 days</option>
+            <option value="12 days">12 days</option>
+            <option value="14 days">14 days</option>
+          </select></div>
+        <div><label class="fl">Budget · Bajeti</label>
+          <select class="fi" id="f-budget">
+            <option value="budget under $1,500">Budget (under $1,500)</option>
+            <option value="mid-range $3,000-6,000" selected>Mid-range ($3–6k)</option>
+            <option value="luxury $8,000-15,000">Luxury ($8–15k)</option>
+            <option value="ultra-luxury">Ultra-luxury</option>
+          </select></div>
+        <div class="fg-full"><label class="fl">Countries · Nchi</label>
+          <div class="ctrow">
+            <div class="ct ke on" onclick="this.classList.toggle('on')">🇰🇪 Kenya</div>
+            <div class="ct ug" onclick="this.classList.toggle('on')">🇺🇬 Uganda</div>
+            <div class="ct tz on" onclick="this.classList.toggle('on')">🇹🇿 Tanzania</div>
+          </div></div>
+        <div class="fg-full"><label class="fl">Your safari in your own words · Maelezo yako (optional)</label>
+          <textarea class="fi" id="f-notes" placeholder="e.g. 'I want to see gorillas in Uganda then end with the Serengeti. My partner loves birds. We prefer small camps away from crowds...'"></textarea></div>
+      </div>
+      <div class="errbox" id="errbox"><div class="errtitle">⚠️ Error · Hitilafu</div><div class="errbody" id="errmsg"></div></div>
+      <button class="gbtn" id="gbtn" onclick="generate()"><span style="font-size:20px;line-height:1">🤖</span>Generate My Safari · Tengeneza Ratiba Yangu</button>
+    </div>
+  </div>
+
+  <div class="loading" id="loading">
+    <span class="lani" id="lani">🦁</span>
+    <div class="ltitle" id="ltitle">Planning your perfect safari...</div>
+    <div class="lsub" id="lsub">Tunatengeneza safari yako bora...</div>
+    <div class="dots"><span></span><span></span><span></span></div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="rhdr">
+      <div class="rtitle">Your Safari Itinerary · Ratiba Yako</div>
+      <div class="rchips" id="rchips"></div>
+      <div class="racts">
+        <button class="rbtn" onclick="copyIt()">📋 Copy</button>
+        <button class="rbtn" onclick="shareIt()">📤 Share</button>
+        <button class="rbtn p" onclick="saveIt()">💾 Save to My Trip</button>
+      </div>
+    </div>
+    <div class="ibody" id="ibody"></div>
+    <div class="chatcard">
+      <div class="chatc-hdr"><span style="font-size:18px">💬</span><div class="chatc-title">Ask follow-up questions · Uliza zaidi</div></div>
+      <div class="fqs">
+        <div class="fq" onclick="askFQ(this)">Best lodges?</div>
+        <div class="fq" onclick="askFQ(this)">Total cost estimate?</div>
+        <div class="fq" onclick="askFQ(this)">What to pack?</div>
+        <div class="fq" onclick="askFQ(this)">Best time of year?</div>
+        <div class="fq" onclick="askFQ(this)">How to book gorilla permits?</div>
+        <div class="fq" onclick="askFQ(this)">Safe for children?</div>
+        <div class="fq" onclick="askFQ(this)">Visa requirements?</div>
+      </div>
+      <div class="cmsgs" id="cmsgs"></div>
+      <div class="cinrow">
+        <input class="cinp" type="text" id="cinp" placeholder="Ask anything... / Uliza chochote..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="sbtn" id="sbtn" onclick="sendChat()">Send ↑</button>
+      </div>
+    </div>
+    <div class="rstbar"><button class="rstlnk" onclick="resetAll()">← Plan another safari · Panga safari nyingine</button></div>
+  </div>
+</div>
+
+<footer style="background:#0F1205;padding:22px 48px;border-top:1px solid rgba(245,237,216,.05);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+  <span style="font-family:'Playfair Display',serif;font-size:15px;color:rgba(245,237,216,.3)">🦁 Safari Planner · safariplanner.co.tz</span>
+  <span style="font-size:12px;color:rgba(245,237,216,.2)">Built in Tanzania 🇹🇿 by Daniel · © 2026</span>
+</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const LS=[
+  {a:'🦁',t:'Talking to the lions...',s:'Tunazungumza na simba...'},
+  {a:'🐘',t:'Counting the elephants...',s:'Tunahesabu ndovu...'},
+  {a:'🦍',t:'Checking gorilla permits...',s:'Tunaangalia ruhusa...'},
+  {a:'🌅',t:'Mapping your perfect route...',s:'Tunapanga njia yako...'},
+  {a:'🗺️',t:'Almost ready...',s:'Karibu kukamilika...'},
+];
+let conv=[],lastIt='';
+
+async function checkStatus(){
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:[{role:'user',content:'Say: ready'}],max_tokens:5})});
+    if(r.ok){document.getElementById('s-ok').style.display='flex';document.getElementById('s-warn').style.display='none';document.getElementById('setup-box').style.display='none';}
+  }catch(e){}
+}
+
+function buildPrompt(){
+  const travelers=document.getElementById('f-travelers').value;
+  const days=document.getElementById('f-days').value;
+  const budget=document.getElementById('f-budget').value;
+  const notes=document.getElementById('f-notes').value.trim();
+  const countries=[...document.querySelectorAll('.ct.on')].map(el=>el.classList.contains('ke')?'Kenya':el.classList.contains('ug')?'Uganda':'Tanzania');
+  const interests=[...document.querySelectorAll('.chip.on')].map(el=>el.textContent.trim());
+  return `You are an expert East Africa safari guide based in Tanzania with deep knowledge of Kenya, Uganda, and Tanzania. You speak English and Swahili.
+
+Create a detailed personalised safari itinerary:
+- Travelers: ${travelers}
+- Duration: ${days}
+- Budget: ${budget}
+- Countries: ${countries.length?countries.join(', '):'Kenya and Tanzania'}
+- Interests: ${interests.length?interests.join(', '):'general wildlife'}
+${notes?`- Special requests: ${notes}`:''}
+
+Format:
+1. Inspiring trip title and 2-sentence overview
+2. Day-by-day: location, morning/afternoon/evening activities, park name, wildlife to spot, accommodation recommendation
+3. Practical tips: best season, top 10 packing items, advance bookings needed (gorilla permits if Uganda), budget breakdown per person
+4. One closing paragraph about why this will be unforgettable
+
+Include Swahili words naturally (pole pole, karibu, simba, ndovu, etc.). Warm, expert, inspiring tone. Built at safariplanner.co.tz by Daniel in Tanzania.`;
+}
+
+async function generate(){
+  const cts=[...document.querySelectorAll('.ct.on')];
+  if(!cts.length){showErr('Select at least one country · Chagua nchi angalau moja');return;}
+  hideErr();
+  document.getElementById('gbtn').disabled=true;
+  document.getElementById('loading').classList.add('show');
+  document.getElementById('result').classList.remove('show');
+  document.getElementById('ex-sec').style.display='none';
+  let li=0;
+  const lt=setInterval(()=>{li=(li+1)%LS.length;const s=LS[li];document.getElementById('lani').textContent=s.a;document.getElementById('ltitle').textContent=s.t;document.getElementById('lsub').textContent=s.s;},1800);
+  conv=[{role:'user',content:buildPrompt()}];
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:conv,max_tokens:2000})});
+    clearInterval(lt);
+    const d=await r.json();
+    if(!r.ok)throw new Error(d.error||'API error '+r.status);
+    const text=d.content[0].text;
+    conv.push({role:'assistant',content:text});
+    lastIt=text;
+    const travelers=document.getElementById('f-travelers').value;
+    const days=document.getElementById('f-days').value;
+    const cchips=[...document.querySelectorAll('.ct.on')].map(el=>el.classList.contains('ke')?'🇰🇪 Kenya':el.classList.contains('ug')?'🇺🇬 Uganda':'🇹🇿 Tanzania');
+    document.getElementById('rchips').innerHTML=[travelers,days,...cchips].map(c=>`<span class="rc">${c}</span>`).join('');
+    document.getElementById('ibody').innerHTML=fmt(text);
+    document.getElementById('cmsgs').innerHTML='';
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('result').classList.add('show');
+    setTimeout(()=>document.getElementById('result').scrollIntoView({behavior:'smooth',block:'start'}),100);
+    showToast('Safari itinerary ready! · Ratiba imekamilika 🎉');
+  }catch(err){
+    clearInterval(lt);
+    document.getElementById('loading').classList.remove('show');
+    document.getElementById('ex-sec').style.display='block';
+    let msg=err.message;
+    if(msg.includes('API key not configured'))msg='🔑 API key not set up. Follow the setup instructions above — add ANTHROPIC_API_KEY to Vercel Environment Variables then redeploy.';
+    else if(msg.includes('Failed to fetch')||msg.includes('NetworkError'))msg='Could not reach the server. Make sure api/chat.js is uploaded to your GitHub repo and Vercel has redeployed.';
+    else if(msg.includes('401'))msg='Invalid API key. Check ANTHROPIC_API_KEY in Vercel Environment Variables.';
+    showErr(msg);
+  }
+  document.getElementById('gbtn').disabled=false;
+}
+
+async function sendChat(){
+  const inp=document.getElementById('cinp');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  inp.value='';
+  addMsg('u',msg);
+  document.getElementById('sbtn').disabled=true;
+  conv.push({role:'user',content:msg});
+  const tid='t'+Date.now();
+  addMsg('ai','...',tid);
+  try{
+    const r=await fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:conv,system:'You are an expert East Africa safari guide based in Tanzania. Answer helpfully and concisely. Include Swahili naturally.',max_tokens:600})});
+    const d=await r.json();
+    const reply=d.content[0].text;
+    conv.push({role:'assistant',content:reply});
+    const el=document.getElementById(tid);
+    if(el)el.querySelector('.mbub').textContent=reply;
+  }catch(e){const el=document.getElementById(tid);if(el)el.querySelector('.mbub').textContent='Error: '+e.message;}
+  document.getElementById('sbtn').disabled=false;
+  const cm=document.getElementById('cmsgs');cm.scrollTop=cm.scrollHeight;
+}
+
+function askFQ(el){document.getElementById('cinp').value=el.textContent;sendChat();}
+function addMsg(role,text,id){
+  const cm=document.getElementById('cmsgs');
+  const d=document.createElement('div');
+  d.className='msg '+(role==='ai'?'ai':'u');
+  if(id)d.id=id;
+  d.innerHTML=`<div class="mav">${role==='ai'?'🦁':'👤'}</div><div class="mbub">${text}</div>`;
+  cm.appendChild(d);cm.scrollTop=cm.scrollHeight;
+}
+function fmt(t){
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h2>$1</h2>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>').replace(/(<li>.*?<\/li>\n?)+/g,m=>'<ul>'+m+'</ul>')
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
+function useEx(card){document.getElementById('f-notes').value=card.querySelector('.es').textContent.replace(/['"]/g,'');document.getElementById('f-notes').scrollIntoView({behavior:'smooth',block:'nearest'});showToast('Example loaded ✓');}
+function showErr(msg){document.getElementById('errmsg').textContent=msg;document.getElementById('errbox').classList.add('show');}
+function hideErr(){document.getElementById('errbox').classList.remove('show');}
+function copyIt(){navigator.clipboard?.writeText(lastIt);showToast('Copied · Imenakiliwa ✓');}
+function shareIt(){const t=lastIt.slice(0,300)+'...\n\nFull itinerary at safariplanner.co.tz';if(navigator.share)navigator.share({title:'My East Africa Safari Plan',text:t,url:'https://safariplanner.co.tz'});else{navigator.clipboard?.writeText(t);showToast('Copied for sharing ✓');}}
+function saveIt(){try{localStorage.setItem('sp_ai_itin',lastIt);}catch(e){}showToast('Saved! Open My Trip ✓');}
+function resetAll(){document.getElementById('result').classList.remove('show');document.getElementById('ex-sec').style.display='block';document.getElementById('f-notes').value='';document.querySelectorAll('.chip.on').forEach(c=>c.classList.remove('on'));conv=[];window.scrollTo({top:0,behavior:'smooth'});}
+function toggleMenu(){document.getElementById('mmenu').classList.toggle('open');document.getElementById('hbtn').classList.toggle('open');}
+function closeMenu(){document.getElementById('mmenu').classList.remove('open');document.getElementById('hbtn').classList.remove('open');}
+document.addEventListener('click',e=>{const m=document.getElementById('mmenu'),b=document.getElementById('hbtn');if(m&&b&&!m.contains(e.target)&&!b.contains(e.target))closeMenu();});
+let toastT;
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('show'),3500);}
+checkStatus();
+</script>
+</body>
+</html>
